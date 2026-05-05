@@ -17,17 +17,20 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 | `cognia-po` | Product ownership | Feature inventory, user stories, requirements gaps, business value mapping, and backlog recommendations |
 | `cognia-reverse` | Reverse engineering | Extracts business domain, user roles, workflows, business rules, and integrations from code — output written for business analysts and product owners |
 | `cognia-sec` | Security analysis | Auto-detects platform(s) and audits for vulnerabilities: injection, broken auth, insecure storage, exposed secrets, dependency CVEs — with a CVSS-aligned remediation roadmap |
-| `cognia-tech` | Technical quality | Code quality, tech debt, dependency audit, security vulnerabilities, and test coverage gaps |
+| `cognia-tech` | Technical quality | Code quality, tech debt, dependency audit, security signals, and test coverage gaps |
 | `cognia-test` | Test engineering | Audits existing test coverage for correctness and quality, identifies missing unit/integration/e2e tests, and produces a prioritised test backlog with acceptance criteria |
-| `cognia-ux` | UI/UX design | Page inventory, user flow mapping, design consistency, accessibility audit, and UX improvements |
+| `cognia-ux` | UI/UX audit | Page inventory, user flow mapping, design consistency, accessibility audit (WCAG), and UX improvement recommendations |
+| `cognia-ux-design` | UI/UX design | Produces wireframes, information architecture, design system, design tokens, component API contracts, and developer handoff artifacts for new or redesigned UIs |
 
 ## Skills
 
-| Skill | Description |
-|-------|-------------|
-| `cognia-arch` | System architecture visualisation — Mermaid diagrams, component relationships, data flows |
-| `cognia-tech` | Deep technical analysis — reverse engineering, dependency mapping, security posture |
-| `cognia-ux` | UI/UX design — wireframes, design systems, user journeys, WCAG accessibility |
+All 13 agents ship with runtime skill wrappers for Claude Code (`.claude/skills/`) and Codex CLI (`.codex/skills/`). Three agents additionally include deep procedure documents and standards under `.github/skills/`:
+
+| Skill folder | Used by | Contents |
+|---|---|---|
+| `.github/skills/cognia-arch` | `cognia-arch` | Mermaid diagram procedure, HTML template, STANDARDS.md |
+| `.github/skills/cognia-tech` | `cognia-tech` | Multi-step analysis procedure, scale decomposition, output format |
+| `.github/skills/cognia-ux` | `cognia-ux-design` | Wireframe procedure, design system, WCAG compliance, handoff artifacts |
 
 ## Usage with GitHub Copilot
 
@@ -65,11 +68,12 @@ npm run uninstall        # remove
 
 | Location | Contents |
 |----------|----------|
-| `~/.copilot/agents/` or `.github/agents/` | 12 `.agent.md` definition files |
-| `~/.copilot/skills/` or `.github/skills/` | Skill folders for `cognia-arch`, `cognia-tech`, `cognia-ux` |
-| `~/.claude/agents/` | Claude Code agent wrappers |
-| `~/.claude/skills/` | Claude Code skill wrappers |
-| `~/.codex/skills/` | Codex CLI skill wrappers |
+| `~/.copilot/agents/` or `.github/agents/` | 13 `.agent.md` canonical agent definitions |
+| `~/.copilot/skills/` or `.github/skills/` | Deep skill procedures for `cognia-arch`, `cognia-tech`, and `cognia-ux-design` |
+| `~/.copilot/standards/` or `.github/standards/` | Shared standards: `core.md` (evidence rules, output contracts, handoff format) and `preflight.md` (setup and context policy) |
+| `~/.claude/agents/` | Claude Code agent wrappers (13 agents) |
+| `~/.claude/skills/` | Claude Code skill wrappers (13 skills) |
+| `~/.codex/skills/` | Codex CLI skill wrappers (13 skills) |
 
 ### Quick start
 

@@ -21,20 +21,10 @@ const PKG_VERSION  = JSON.parse(fs.readFileSync(path.join(PACKAGE_ROOT, 'package
 // can clean old package-owned definitions after the canonical location moves.
 const LEGACY_GLOBAL_INSTALL_DIRNAME = 'cognia';
 
-const AGENTS = [
-  'cognia-android',
-  'cognia-arch',
-  'cognia-backend',
-  'cognia-frontend',
-  'cognia-ios',
-  'cognia-perf',
-  'cognia-po',
-  'cognia-reverse',
-  'cognia-sec',
-  'cognia-tech',
-  'cognia-test',
-  'cognia-ux',
-];
+const AGENTS = JSON.parse(fs.readFileSync(path.join(PACKAGE_ROOT, '.github', 'roster.json'), 'utf8'))
+  .skills
+  .filter(entry => entry.installer && entry.status === 'active')
+  .map(entry => entry.name);
 
 const args = process.argv.slice(2);
 const isUninstall = args.includes('--uninstall');
@@ -112,16 +102,18 @@ function removePackageDefinitions(skillsInstallDir, agentsInstallDir) {
   }
 }
 
-function removeInstalledDefinitions(scope, skillsInstallDir, agentsInstallDir) {
+function removeInstalledDefinitions(scope, skillsInstallDir, agentsInstallDir, standardsInstallDir) {
   const installBase = path.dirname(skillsInstallDir);
 
   console.log('▶ Removing GitHub Copilot definitions...');
   removePackageDefinitions(skillsInstallDir, agentsInstallDir);
+  if (removeIfExists(standardsInstallDir)) console.log(`  ✓ removed standards`);
 
   if (scope === 'global') {
     for (const base of [path.join(os.homedir(), '.copilot'), path.join(os.homedir(), '.github')]) {
       if (base !== installBase) {
         removePackageDefinitions(path.join(base, 'skills'), path.join(base, 'agents'));
+        removeIfExists(path.join(base, 'standards'));
       }
     }
 
@@ -136,10 +128,11 @@ function removeInstalledDefinitions(scope, skillsInstallDir, agentsInstallDir) {
  * Copy a file, replacing all occurrences of relative `.github/skills/` and
  * `.github/agents/` paths with the absolute paths where those files are installed.
  */
-function copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir) {
+function copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir, standardsInstallDir) {
   let content = fs.readFileSync(src, 'utf8');
   content = content.replaceAll('.github/skills/', skillsInstallDir + '/');
   content = content.replaceAll('.github/agents/', agentsInstallDir + '/');
+  content = content.replaceAll('.github/standards/', standardsInstallDir + '/');
   fs.writeFileSync(dest, content, 'utf8');
 }
 
@@ -164,15 +157,16 @@ function resolveBases(scope) {
   // Full skill and agent files are installed in the Copilot-visible source tree
   // so Claude and Codex wrappers can reference the same canonical files.
   const installBase      = resolveCopilotBase(scope);
-  const skillsInstallDir = path.join(installBase, 'skills');
-  const agentsInstallDir = path.join(installBase, 'agents');
-  return { claudeBase, codexBase, skillsInstallDir, agentsInstallDir };
+  const skillsInstallDir    = path.join(installBase, 'skills');
+  const agentsInstallDir    = path.join(installBase, 'agents');
+  const standardsInstallDir = path.join(installBase, 'standards');
+  return { claudeBase, codexBase, skillsInstallDir, agentsInstallDir, standardsInstallDir };
 }
 
 // ── install ───────────────────────────────────────────────────────────────────
 
 function install(scope, selectedRuntimes) {
-  const { claudeBase, codexBase, skillsInstallDir, agentsInstallDir } = resolveBases(scope);
+  const { claudeBase, codexBase, skillsInstallDir, agentsInstallDir, standardsInstallDir } = resolveBases(scope);
 
   console.log('');
   console.log('══════════════════════════════════════════════════════════');
@@ -183,7 +177,16 @@ function install(scope, selectedRuntimes) {
   console.log('══════════════════════════════════════════════════════════');
   console.log('');
 
-  // ── Step 1: Copy .github/skills/ and .github/agents/ to stable install location
+  // ── Step 1: Copy .github/skills/, .github/agents/, and .github/standards/ to stable install location
+  console.log('▶ Installing shared standards...');
+  const ghStandardsSrc = path.join(PACKAGE_ROOT, '.github', 'standards');
+  if (fs.existsSync(ghStandardsSrc)) {
+    copyDir(ghStandardsSrc, standardsInstallDir);
+    console.log(`  ✓ standards/`);
+    console.log(`  → ${standardsInstallDir}`);
+  }
+  console.log('');
+
   console.log('▶ Installing skill definitions...');
   const ghSkillsSrc = path.join(PACKAGE_ROOT, '.github', 'skills');
   for (const agent of AGENTS) {
@@ -213,7 +216,7 @@ function install(scope, selectedRuntimes) {
     const dest = path.join(agentsInstallDir, `${agent}.agent.md`);
     if (fs.existsSync(src)) {
       fs.mkdirSync(agentsInstallDir, { recursive: true });
-      fs.copyFileSync(src, dest);
+      copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir, standardsInstallDir);
       console.log(`  ✓ agents/${agent}.agent.md`);
     }
   }
@@ -231,7 +234,7 @@ function install(scope, selectedRuntimes) {
         const src  = path.join(agentSrc, `${agent}.md`);
         const dest = path.join(agentDest, `${agent}.md`);
         if (fs.existsSync(src)) {
-          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir);
+          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir, standardsInstallDir);
           console.log(`  ✓ agent : ${agent}`);
         }
       }
@@ -245,7 +248,7 @@ function install(scope, selectedRuntimes) {
         const dest = path.join(skillDest, agent, 'SKILL.md');
         if (fs.existsSync(src)) {
           fs.mkdirSync(path.dirname(dest), { recursive: true });
-          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir);
+          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir, standardsInstallDir);
           console.log(`  ✓ skill : ${agent}`);
         }
       }
@@ -264,7 +267,7 @@ function install(scope, selectedRuntimes) {
         const dest = path.join(skillDest, agent, 'SKILL.md');
         if (fs.existsSync(src)) {
           fs.mkdirSync(path.dirname(dest), { recursive: true });
-          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir);
+          copyWithPatchedPaths(src, dest, skillsInstallDir, agentsInstallDir, standardsInstallDir);
           console.log(`  ✓ skill : ${agent}`);
         }
       }
@@ -286,7 +289,7 @@ function install(scope, selectedRuntimes) {
 // ── uninstall ─────────────────────────────────────────────────────────────────
 
 function uninstall(scope, selectedRuntimes) {
-  const { claudeBase, codexBase, skillsInstallDir, agentsInstallDir } = resolveBases(scope);
+  const { claudeBase, codexBase, skillsInstallDir, agentsInstallDir, standardsInstallDir } = resolveBases(scope);
 
   console.log('');
   console.log('══════════════════════════════════════════════════════════');
@@ -294,7 +297,7 @@ function uninstall(scope, selectedRuntimes) {
   console.log('══════════════════════════════════════════════════════════');
   console.log('');
 
-  removeInstalledDefinitions(scope, skillsInstallDir, agentsInstallDir);
+  removeInstalledDefinitions(scope, skillsInstallDir, agentsInstallDir, standardsInstallDir);
   console.log('');
 
   for (const runtime of selectedRuntimes) {

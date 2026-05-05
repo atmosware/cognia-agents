@@ -21,7 +21,8 @@
 | cognia-ios | `.github/agents/cognia-ios.agent.md` | iOS mobile | iOS codebase audit |
 | cognia-po | `.github/agents/cognia-po.agent.md` | Product ownership | Product & feature analysis |
 | cognia-tech | `.github/agents/cognia-tech.agent.md` | Technical quality | Code quality & tech debt |
-| cognia-ux | `.github/agents/cognia-ux.agent.md` | UI/UX design | UX & accessibility audit |
+| cognia-ux | `.github/agents/cognia-ux.agent.md` | UI/UX audit | UX & accessibility audit of existing UI |
+| cognia-ux-design | `.github/agents/cognia-ux-design.agent.md` | UI/UX design | Wireframes, design system, tokens & developer handoff for new or redesigned UIs |
 
 ---
 

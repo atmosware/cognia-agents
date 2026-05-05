@@ -16,6 +16,12 @@ argument-hint: 'Describe the Android project or a specific module/feature to ana
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Core Responsibilities
 
 - **Screen & Fragment inventory**: Enumerate every screen, Activity, Fragment, Composable function, and dialog/bottom-sheet in the application.
@@ -70,7 +76,7 @@ argument-hint: 'Describe the Android project or a specific module/feature to ana
 - Create or overwrite: `cognia/{project_name}-android-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 
 ## Output Format

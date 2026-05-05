@@ -1,0 +1,130 @@
+{
+  "skills": [
+    {
+      "name": "cognia-android",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-android.agent.md",
+      "outputs": ["cognia/{project_name}-android-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-arch",
+      "phase": "advisory",
+      "tier": "2",
+      "skill_path": ".github/skills/cognia-arch/SKILL.md",
+      "agent_path": ".github/agents/cognia-arch.agent.md",
+      "outputs": [
+        "cognia/{project_name}-architecture.md",
+        "cognia/{project_name}-architecture.html"
+      ],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-backend",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-backend.agent.md",
+      "outputs": ["cognia/{project_name}-backend-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-frontend",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-frontend.agent.md",
+      "outputs": ["cognia/{project_name}-frontend-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-ios",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-ios.agent.md",
+      "outputs": ["cognia/{project_name}-ios-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-perf",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-perf.agent.md",
+      "outputs": ["cognia/{project_name}-perf-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-po",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-po.agent.md",
+      "outputs": ["cognia/{project_name}-po-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-reverse",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-reverse.agent.md",
+      "outputs": ["cognia/{project_name}-reverse-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-sec",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-sec.agent.md",
+      "outputs": ["cognia/{project_name}-sec-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-tech",
+      "phase": "advisory",
+      "tier": "2",
+      "skill_path": ".github/skills/cognia-tech/SKILL.md",
+      "agent_path": ".github/agents/cognia-tech.agent.md",
+      "outputs": ["cognia/{project_name}-technical-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-test",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-test.agent.md",
+      "outputs": ["cognia/{project_name}-test-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-ux",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-ux.agent.md",
+      "outputs": ["cognia/{project_name}-ui-ux-analysis.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
+      "name": "cognia-ux-design",
+      "phase": "advisory",
+      "tier": "2",
+      "skill_path": ".github/skills/cognia-ux-design/SKILL.md",
+      "agent_path": ".github/agents/cognia-ux-design.agent.md",
+      "outputs": [
+        "cognia/{project_name}-ui-ux-pages.md",
+        "cognia/{project_name}-ui-ux-pages.html"
+      ],
+      "installer": true,
+      "status": "active"
+    }
+  ]
+}

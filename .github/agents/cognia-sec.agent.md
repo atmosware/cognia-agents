@@ -16,6 +16,12 @@ argument-hint: 'Describe the project or a specific security concern to investiga
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Step 0 — Project Type Detection (Always First)
 
 Before any analysis, scan the repository root and key config files to determine which platform(s) are present. Apply **only** the matching playbook(s) below.
@@ -41,6 +47,7 @@ State the detected platform(s) explicitly before proceeding.
 - DO NOT duplicate structural inventories already owned by `cognia-backend`, `cognia-frontend`, `cognia-ios`, or `cognia-android` — focus exclusively on security signals.
 - Provide exact evidence where derivable from code; otherwise bound the inference and explain the reasoning.
 - Tag every finding as `Confirmed` (directly evidenced in code) or `Inferred` (likely based on pattern or absence of defence).
+- **Secret disclosure ban**: If a secret, credential, or private key is discovered, report only the file path, variable or key name, and secret type. Do NOT print the full value. Show at most the first 4 and last 4 characters (e.g. `sk-t...9kQZ`) if needed to confirm uniqueness or for deduplication. This applies to all runtimes and output formats without exception.
 
 ## Evidence Rules
 
@@ -184,7 +191,7 @@ State the detected platform(s) explicitly before proceeding.
 - Create or overwrite: `cognia/{project_name}-sec-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 - If multiple platforms are detected, include all relevant sections in a single file.
 
