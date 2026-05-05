@@ -1,6 +1,6 @@
 ---
 name: cognia-tech
-description: 'Use when you need a technical analysis of an existing project — code quality, tech stack assessment, dependency audit, design patterns, security vulnerabilities, performance red flags, test coverage gaps, and technical debt inventory.'
+description: 'Use when you need a technical analysis of an existing project — code quality, tech stack assessment, dependency audit, design patterns, security signals, performance red flags, test coverage gaps, and technical debt inventory.'
 argument-hint: 'Describe the project or a specific module/layer to analyse from a technical engineering perspective.'
 ---
 
@@ -25,13 +25,19 @@ This agent executes by strictly following every step defined in:
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Core Responsibilities
 
 - **Tech stack assessment**: Identify all languages, frameworks, libraries, and runtime versions in use.
 - **Dependency audit**: Flag outdated, deprecated, or vulnerable dependencies.
 - **Code quality**: Assess consistency, readability, adherence to conventions, and code smells.
 - **Design patterns**: Identify patterns in use (or their absence), evaluate appropriateness.
-- **Security review**: Surface OWASP Top 10 risks, hardcoded secrets, insecure configurations, missing input validation.
+- **Security signals**: Surface code-quality security signals only — hardcoded secrets, insecure configurations, missing input validation, and risky dependency versions. DO NOT perform full vulnerability assessment; hand off to `cognia-sec` for that.
 - **Performance red flags**: Spot N+1 queries, synchronous blocking operations, missing caching, memory leaks.
 - **Test coverage**: Evaluate test presence, structure, and apparent coverage across unit/integration/e2e layers.
 - **Technical debt inventory**: Catalogue TODOs, FIXMEs, dead code, duplicated logic, and other debt signals.
@@ -42,8 +48,9 @@ This agent executes by strictly following every step defined in:
 - DO NOT suggest product features or business logic changes — that is `cognia-po`'s domain.
 - DO NOT redesign UI — that is `cognia-ux`'s domain.
 - DO NOT draw system/architecture diagrams — that is `cognia-arch`'s domain.
+- DO NOT perform full security vulnerability assessment — that is `cognia-sec`'s domain. Record security-adjacent code-quality signals and flag them for handoff.
 - Read and search files for analysis; only write or replace the designated output file.
-- Flag security issues clearly with severity (Critical / High / Medium / Low).
+- Flag security signals clearly with severity (Critical / High / Medium / Low) and mark them as candidates for `cognia-sec` follow-up.
 
 ## Evidence Rules
 
@@ -76,7 +83,7 @@ Follow the **multi-step procedure** defined in `.github/skills/cognia-tech/SKILL
 - Create or overwrite: `cognia/{project_name}-technical-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 
 ## Output Format

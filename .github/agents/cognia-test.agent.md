@@ -18,6 +18,12 @@ argument-hint: 'Describe the project or a specific area to audit (e.g. "check te
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Step 0 — Project Type Detection (Always First)
 
 Before any analysis, scan the repository root and key config files to determine which platform(s) are present. Apply **only** the matching playbook(s) below.
@@ -204,7 +210,7 @@ When evaluating existing tests, assess against these dimensions:
 - Create or overwrite: `cognia/{project_name}-test-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 - If multiple platforms are detected, include all relevant sections in a single file.
 

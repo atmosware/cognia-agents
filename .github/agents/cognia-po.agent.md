@@ -16,6 +16,12 @@ argument-hint: 'Describe the project or a specific feature area to analyse from 
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Core Responsibilities
 
 - **Feature inventory**: Enumerate all product features and capabilities surfaced by the codebase.
@@ -34,6 +40,7 @@ argument-hint: 'Describe the project or a specific feature area to analyse from 
 - DO NOT produce architecture diagrams — that is `cognia-arch`'s domain.
 - Read and search files for analysis; only write or replace the designated output file.
 - Base all findings strictly on what exists in the project — do not hallucinate features.
+- Every backlog item must be classified by its evidence source: `Confirmed from code behaviour`, `Inferred from existing workflow`, or `Requires stakeholder validation`. Do not mix categories in the same table row.
 
 ## Evidence Rules
 
@@ -54,10 +61,10 @@ argument-hint: 'Describe the project or a specific feature area to analyse from 
 
 **Writing the output file is mandatory. The analysis is not complete until the file is created.**
 
-- Create or overwrite: `cognia/cognia-po-analysis.md`
+- Create or overwrite: `cognia/{project_name}-po-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 
 ## Output Format
@@ -84,8 +91,26 @@ One paragraph overview of what the product does and its apparent target users.
 (Rank features by perceived business/user value with brief rationale)
 
 ## Backlog Suggestions
+
+Separate items by evidence source. Do not mix categories.
+
+### Confirmed from code behaviour
+> Directly evidenced by existing code, routes, or config — no stakeholder input needed to validate the item exists.
+
+| Priority | Item | Type (Feature/Bug/Debt) | Evidence |
+|----------|------|------------------------|----------|
+
+### Inferred from existing workflow
+> Strongly implied by observed patterns but not explicitly implemented or documented.
+
 | Priority | Item | Type (Feature/Bug/Debt) | Rationale |
 |----------|------|------------------------|-----------|
+
+### Requires stakeholder validation
+> Speculative improvements, product hypotheses, or items with insufficient code evidence. Must not be treated as requirements without explicit stakeholder sign-off.
+
+| Priority | Item | Type (Feature/Bug/Debt) | Assumption |
+|----------|------|------------------------|------------|
 
 ## Stakeholder Concerns
 (Issues that may require PO attention before release)

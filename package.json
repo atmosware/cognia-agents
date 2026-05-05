@@ -22,14 +22,20 @@
     "uninstall": "node bin/install.js --uninstall",
     "new-skill": "bash scripts/new-skill.sh",
     "sync:wrappers": "node scripts/sync-wrappers.js",
-    "check:wrappers": "node scripts/sync-wrappers.js --check"
+    "check:wrappers": "node scripts/sync-wrappers.js --check",
+    "check:todos": "node scripts/check-todos.js",
+    "check:docs": "node scripts/check-docs.js"
   },
   "files": [
     "AGENTS.md",
     "README.md",
     ".github/agents",
+    ".github/roster.json",
     ".github/skills",
+    ".github/standards",
     ".claude/agents",
+    ".claude/skills",
+    ".codex/skills",
     "bin/",
     "scripts/"
   ]

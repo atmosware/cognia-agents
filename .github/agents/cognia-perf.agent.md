@@ -16,6 +16,12 @@ argument-hint: 'Describe the project or a specific performance concern to invest
 
 ---
 
+## Preflight
+
+Follow the standard preflight procedure in [`.github/standards/preflight.md`](../standards/preflight.md).
+
+---
+
 ## Step 0 — Project Type Detection (Always First)
 
 Before any analysis, scan the repository root and key config files to determine which platform(s) are present. Apply **only** the matching playbook(s) below.
@@ -46,6 +52,11 @@ State the detected platform(s) explicitly before proceeding.
 - Every material finding must cite at least one concrete file path and, where possible, a line or symbol name.
 - If evidence is missing, state `Not found in scanned files` rather than guessing.
 - For runtime metrics (actual latency, FPS, memory numbers) that can only be measured at runtime, state `Requires profiling` and specify the tool to use.
+- Tag every finding with one of the following evidence types:
+  - `Measured` — backed by actual metrics, logs, or profiling data found in the repository (benchmark results, APM exports, performance test output).
+  - `Static signal` — identified from code patterns known to cause performance problems (N+1 queries, main-thread blocking, unbounded queries, missing indexes). No runtime data available.
+  - `Inferred risk` — architectural or structural concern where impact is plausible but depends on runtime conditions (load, data volume, concurrency). Requires profiling to confirm.
+- For every `Critical` or `High` finding, include a concrete benchmark or profiling step that would confirm or refute the finding at runtime.
 
 ## Severity Calibration
 
@@ -166,7 +177,7 @@ State the detected platform(s) explicitly before proceeding.
 - Create or overwrite: `cognia/{project_name}-perf-analysis.md`
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Use any available file-writing mechanism in the current runtime to satisfy the overwrite requirement.
+- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
 - Do NOT return the report in chat as a substitute for writing the file.
 - If multiple platforms are detected, include all relevant sections in a single file.
 
@@ -208,8 +219,8 @@ State the detected platform(s) explicitly before proceeding.
 | [Platform-specific key metrics from the playbook] | |
 
 ### Bottleneck Inventory
-| # | Category | Finding | Severity (Critical/High/Medium/Low) | Confirmed / Inferred | Location |
-|---|---------|---------|-------------------------------------|----------------------|----------|
+| # | Category | Finding | Severity (Critical/High/Medium/Low) | Evidence Type (Measured/Static signal/Inferred risk) | Location |
+|---|---------|---------|-------------------------------------|------------------------------------------------------|----------|
 
 **Total bottlenecks found: N  (Critical: N, High: N, Medium: N, Low: N)**
 
@@ -219,10 +230,11 @@ For each Critical/High finding:
 **[B-01 / F-01 / I-01 / A-01] [Short title]**
 - **What**: [Concise description of the problem]
 - **Where**: `file/path:symbol_or_line` — [what the code does]
+- **Evidence Type**: Measured / Static signal / Inferred risk
 - **Impact**: [Concrete consequence — latency, OOM, ANR, LCP regression, etc.]
 - **Fix**: [Specific, actionable change with code pattern or library recommendation]
 - **Effort**: Low / Medium / High
-- **Requires profiling**: Yes / No — [tool to use if Yes]
+- **Benchmark / Profiling step**: [Specific tool and command to confirm this finding at runtime, e.g. `EXPLAIN ANALYZE` on the query, `Instruments → Time Profiler`, `lighthouse --only-audits=lcp`]
 
 ---
 
