@@ -1,0 +1,7 @@
+---
+description: Use when you need to design or redesign the UI/UX of a project — wireframes, information architecture, design system, design tokens, component API contracts, user journey maps, WCAG 2.1 AA accessibility compliance, responsive breakpoints, and developer handoff artifacts.
+globs:
+alwaysApply: false
+---
+
+> **Canonical definition**: Read `.github/agents/cognia-ux-design.agent.md` and follow every instruction defined there exactly. This file exists only to register the agent — all role, responsibilities, constraints, approach, and output format are in the canonical file.

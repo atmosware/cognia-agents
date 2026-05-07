@@ -24,7 +24,7 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 
 ## Skills
 
-All 13 agents ship with runtime skill wrappers for Claude Code (`.claude/skills/`) and Codex CLI (`.codex/skills/`). Three agents additionally include deep procedure documents and standards under `.github/skills/`:
+All 13 agents ship with runtime wrappers for Claude Code (`.claude/skills/`), Codex CLI (`.codex/skills/`), and Cursor (`.cursor/rules/`). Three agents additionally include deep procedure documents and standards under `.github/skills/`:
 
 | Skill folder | Used by | Contents |
 |---|---|---|
@@ -32,11 +32,7 @@ All 13 agents ship with runtime skill wrappers for Claude Code (`.claude/skills/
 | `.github/skills/cognia-tech` | `cognia-tech` | Multi-step analysis procedure, scale decomposition, output format |
 | `.github/skills/cognia-ux` | `cognia-ux-design` | Wireframe procedure, design system, WCAG compliance, handoff artifacts |
 
-## Usage with GitHub Copilot
-
-All agent definitions live in `.github/agents/*.agent.md`. Reference them in VS Code's agent mode or any Copilot-compatible tool.
-
-### Installation
+## Installation
 
 Run the interactive installer via `npx` — no local install required:
 
@@ -46,14 +42,17 @@ npx cognia
 
 The installer will ask:
 - **Scope**: `Global` (recommended — available in all projects) or `Local` (current project only)
-- **Runtime**: `All` (Claude Code + Codex CLI), `Claude Code only`, or `Codex CLI only`
+- **Runtime**: `All` (Claude Code + Codex CLI + Cursor), `Claude Code only`, `Codex CLI only`, or `Cursor only`
 
 #### Non-interactive flags
 
 ```bash
-npx cognia --global          # global install, all runtimes
-npx cognia --local           # local install (current project)
-npx cognia --uninstall       # remove all installed files
+npx cognia --global           # global install, all runtimes
+npx cognia --local            # local install (current project only)
+npx cognia --global --claude  # global, Claude Code only
+npx cognia --global --codex   # global, Codex CLI only
+npx cognia --global --cursor  # global, Cursor only
+npx cognia --uninstall        # remove all installed files
 ```
 
 #### Script shortcuts (if installed locally)
@@ -74,18 +73,48 @@ npm run uninstall        # remove
 | `~/.claude/agents/` | Claude Code agent wrappers (13 agents) |
 | `~/.claude/skills/` | Claude Code skill wrappers (13 skills) |
 | `~/.codex/skills/` | Codex CLI skill wrappers (13 skills) |
+| `~/.cursor/rules/` | Cursor rule wrappers (13 `.mdc` files) |
 
-### Quick start
+For a **local** install, all paths above are relative to the project root (`.claude/`, `.codex/`, `.cursor/`, `.github/`) instead of `~/`.
 
-1. Run the installer:
+## Usage
 
-```bash
-npx cognia
+### GitHub Copilot
+
+All agent definitions live in `.github/agents/*.agent.md`. Reference them in VS Code's agent mode or any Copilot-compatible tool:
+
+```
+@cognia-arch analyse the architecture of this service
+@cognia-backend map all API endpoints
 ```
 
-2. In VS Code agent mode, select the relevant agent (e.g. `cognia-arch`) and describe the project or sub-system to analyse.
+### Claude Code
 
-3. In Claude Code, invoke agents with `/cognia-arch` or `@cognia-tech`.
+Invoke agents with `/agent-name` or `@agent-name`:
+
+```
+/cognia-arch
+@cognia-tech
+/cognia-sec
+```
+
+### Cursor
+
+After installing, Cursor's AI picks up the relevant agent rule automatically based on what you ask. You can also invoke agents explicitly:
+
+```
+Use cognia-arch to analyse the architecture of this project.
+Run cognia-backend on the codebase and write the analysis.
+```
+
+Each agent rule is stored in `.cursor/rules/` (local) or `~/.cursor/rules/` (global) as a `.mdc` file. Cursor loads the rule into context when the request matches the rule's description.
+
+### Codex CLI
+
+```bash
+$cognia-arch
+$cognia-backend
+```
 
 ## Cross-Agent Rules
 
