@@ -36,6 +36,7 @@
     ".claude/agents",
     ".claude/skills",
     ".codex/skills",
+    ".cursor/agents",
     ".cursor/rules",
     "bin/",
     "scripts/"

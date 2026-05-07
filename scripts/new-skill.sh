@@ -60,6 +60,7 @@ AGENT_FILE="$ROOT/.github/agents/$SKILL_NAME.agent.md"
 CLAUDE_AGENT_FILE="$ROOT/.claude/agents/$SKILL_NAME.md"
 CLAUDE_SKILL_DIR="$ROOT/.claude/skills/$SKILL_NAME"
 CODEX_SKILL_DIR="$ROOT/.codex/skills/$SKILL_NAME"
+CURSOR_AGENT_FILE="$ROOT/.cursor/agents/$SKILL_NAME.md"
 CURSOR_RULE_FILE="$ROOT/.cursor/rules/$SKILL_NAME.mdc"
 
 echo ""
@@ -67,14 +68,14 @@ echo "Scaffolding skill: $SKILL_NAME  (tier=$TIER, phase=$PHASE)"
 echo "──────────────────────────────────────────────────────"
 
 # Guard: abort if any target file already exists
-for f in "$SKILL_DIR/SKILL.md" "$AGENT_FILE" "$CLAUDE_AGENT_FILE" "$CLAUDE_SKILL_DIR/SKILL.md" "$CODEX_SKILL_DIR/SKILL.md" "$CURSOR_RULE_FILE"; do
+for f in "$SKILL_DIR/SKILL.md" "$AGENT_FILE" "$CLAUDE_AGENT_FILE" "$CLAUDE_SKILL_DIR/SKILL.md" "$CODEX_SKILL_DIR/SKILL.md" "$CURSOR_AGENT_FILE" "$CURSOR_RULE_FILE"; do
   if [[ -e "$f" ]]; then
     echo "Error: '$f' already exists. Remove it or choose a different name."
     exit 1
   fi
 done
 
-mkdir -p "$SKILL_DIR" "$CLAUDE_SKILL_DIR" "$CODEX_SKILL_DIR" "$ROOT/.cursor/rules"
+mkdir -p "$SKILL_DIR" "$CLAUDE_SKILL_DIR" "$CODEX_SKILL_DIR" "$ROOT/.cursor/agents" "$ROOT/.cursor/rules"
 
 # ── 1. .github/skills/<name>/SKILL.md ─────────────────────────────────────────
 cat > "$SKILL_DIR/SKILL.md" << SKILL_EOF
@@ -277,7 +278,19 @@ CODEX_SKILL_EOF
 
 echo "  created  .codex/skills/$SKILL_NAME/SKILL.md"
 
-# ── 7. .cursor/rules/<name>.mdc ──────────────────────────────────────────────
+# ── 7. .cursor/agents/<name>.md ──────────────────────────────────────────────
+cat > "$CURSOR_AGENT_FILE" << CURSOR_AGENT_EOF
+---
+name: $SKILL_NAME
+description: "TODO: agent description — same as .claude/agents/$SKILL_NAME.md."
+---
+
+> **Canonical definition**: Read \`.github/agents/$SKILL_NAME.agent.md\` and follow every instruction defined there exactly. This file exists only to register the agent — all role, responsibilities, constraints, approach, and output format are in the canonical file.
+CURSOR_AGENT_EOF
+
+echo "  created  .cursor/agents/$SKILL_NAME.md"
+
+# ── 8. .cursor/rules/<name>.mdc ──────────────────────────────────────────────
 cat > "$CURSOR_RULE_FILE" << CURSOR_RULE_EOF
 ---
 description: "TODO: runtime description — same as .claude/agents/$SKILL_NAME.md."
