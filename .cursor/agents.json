@@ -1,0 +1,82 @@
+{
+  "agents": [
+    {
+      "id": "cognia-tech",
+      "name": "Cognia Tech",
+      "description": "Use when you need a technical analysis of an existing project — code quality, tech stack assessment, dependency audit, design patterns, security signals, performance red flags, test coverage gaps, and technical debt inventory.",
+      "path": "agents/cognia-tech.md"
+    },
+    {
+      "id": "cognia-ux",
+      "name": "Cognia UX",
+      "description": "Use when you need a UI/UX analysis of an existing project — page and screen inventory, user flow mapping, design consistency, component library assessment, accessibility audit, responsiveness, interaction patterns, and UX improvement recommendations.",
+      "path": "agents/cognia-ux.md"
+    },
+    {
+      "id": "cognia-android",
+      "name": "Cognia Android",
+      "description": "Use when you need a deep-dive Android mobile analysis of an existing project — full screen and fragment inventory, component catalogue, feature mapping, networking layer audit, navigation patterns, state management, dependency catalogue, Kotlin/Java patterns, Play Store readiness, and Android-specific quality concerns.",
+      "path": "agents/cognia-android.md"
+    },
+    {
+      "id": "cognia-backend",
+      "name": "Cognia Backend",
+      "description": "Use when you need a deep-dive backend analysis of an existing project — full endpoint inventory, service catalogue, external integrations, database schema, authentication/authorisation model, background jobs, event/message flows, and API contract quality.",
+      "path": "agents/cognia-backend.md"
+    },
+    {
+      "id": "cognia-frontend",
+      "name": "Cognia Frontend",
+      "description": "Use when you need a deep-dive frontend analysis of an existing web project — full page and route inventory, component catalogue, feature mapping, state management audit, API integration points, styling system, performance patterns, and bundle/build configuration.",
+      "path": "agents/cognia-frontend.md"
+    },
+    {
+      "id": "cognia-reverse",
+      "name": "Cognia Reverse",
+      "description": "Use when you need to reverse engineer an existing project to understand its business domain, features, workflows, user roles, business rules, and integrations — auto-detects project type (backend, frontend, iOS, Android, or mixed) and produces a report written for business analysts, product owners, and non-technical stakeholders.",
+      "path": "agents/cognia-reverse.md"
+    },
+    {
+      "id": "cognia-po",
+      "name": "Cognia PO",
+      "description": "Use when you need a product owner analysis of an existing project — feature inventory, user story extraction, requirements gaps, business value mapping, backlog suggestions, acceptance criteria, stakeholder concerns, and roadmap recommendations.",
+      "path": "agents/cognia-po.md"
+    },
+    {
+      "id": "cognia-test",
+      "name": "Cognia Test",
+      "description": "Use when you need a test engineering analysis of an existing project — auto-detects project type (backend, frontend, iOS, Android, or mixed), audits existing test coverage for functional and structural correctness, identifies missing unit/integration/e2e tests, assesses test quality, and delivers a prioritised list of recommended tests with acceptance criteria.",
+      "path": "agents/cognia-test.md"
+    },
+    {
+      "id": "cognia-sec",
+      "name": "Cognia Security",
+      "description": "Use when you need a security analysis of an existing project — auto-detects project type (backend, frontend, iOS, Android, or mixed), then audits the relevant layer for vulnerabilities across authentication, authorisation, data exposure, injection, network security, and dependency risks, and delivers prioritised remediation recommendations.",
+      "path": "agents/cognia-sec.md"
+    },
+    {
+      "id": "cognia-ios",
+      "name": "Cognia iOS",
+      "description": "Use when you need a deep-dive iOS mobile analysis of an existing project — full screen and view controller inventory, component catalogue, feature mapping, networking layer audit, navigation patterns, state management, dependency catalogue, Swift/Objective-C patterns, App Store readiness, and iOS-specific quality concerns.",
+      "path": "agents/cognia-ios.md"
+    },
+    {
+      "id": "cognia-arch",
+      "name": "Cognia Architecture",
+      "description": "Use when you need a system design and architecture analysis of an existing project — component map, data flow, service boundaries, coupling and cohesion, scalability, observability, resilience patterns, and architectural risk assessment.",
+      "path": "agents/cognia-arch.md"
+    },
+    {
+      "id": "cognia-perf",
+      "name": "Cognia Performance",
+      "description": "Use when you need a performance analysis of an existing project — auto-detects project type (backend, frontend, iOS, Android, or mixed), then audits the relevant layer for bottlenecks across queries, rendering, networking, memory, startup, and concurrency, and delivers prioritised improvement recommendations.",
+      "path": "agents/cognia-perf.md"
+    },
+    {
+      "id": "cognia-ux-design",
+      "name": "Cognia UX Design",
+      "description": "Use when you need to design or redesign the UI/UX of a project — wireframes, information architecture, design system, design tokens, component API contracts, user journey maps, WCAG 2.1 AA accessibility compliance, responsive breakpoints, and developer handoff artifacts.",
+      "path": "agents/cognia-ux-design.md"
+    }
+  ]
+}

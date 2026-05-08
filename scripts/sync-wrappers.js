@@ -145,6 +145,18 @@ function expectedWrapperTargets(entry) {
       fields: ['description'],
       canonical: readCanonicalMetadata(entry, [entry.agent_path], ['description']),
     });
+    targets.push({
+      kind: 'agent',
+      path: path.join(ROOT, '.cursor', 'agents', `${entry.name}.md`),
+      fields: ['description'],
+      canonical: readCanonicalMetadata(entry, [entry.agent_path], ['description']),
+    });
+    targets.push({
+      kind: 'rule',
+      path: path.join(ROOT, '.cursor', 'rules', `${entry.name}.mdc`),
+      fields: ['description'],
+      canonical: readCanonicalMetadata(entry, [entry.agent_path], ['description']),
+    });
   }
 
   return targets;
