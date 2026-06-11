@@ -77,6 +77,12 @@
       "name": "Cognia UX Design",
       "description": "Use when you need to design or redesign the UI/UX of a project — wireframes, information architecture, design system, design tokens, component API contracts, user journey maps, WCAG 2.1 AA accessibility compliance, responsive breakpoints, and developer handoff artifacts.",
       "path": "agents/cognia-ux-design.md"
+    },
+    {
+      "id": "cognia-review",
+      "name": "Cognia Review",
+      "description": "Use when you need a deep code review of a pull request, branch, or changeset — auto-detects project type, performs structural, semantic, architectural, regression-risk, performance, security, test-alignment and communication-quality analysis of the diff (not the whole repo), and delivers prioritised file:line findings with suggested patches and a Change Risk Score.",
+      "path": "agents/cognia-review.md"
     }
   ]
 }
