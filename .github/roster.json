@@ -72,7 +72,7 @@
       "phase": "advisory",
       "tier": "1",
       "agent_path": ".github/agents/cognia-review.agent.md",
-      "outputs": ["cognia/{project_name}-review-{ref}.md"],
+      "outputs": ["cognia/cognia-review-findings.md"],
       "installer": true,
       "status": "active"
     },

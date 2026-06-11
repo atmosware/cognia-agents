@@ -565,15 +565,13 @@ A diff in a non-primary language must be reviewed at the same depth as the prima
 
 **Writing the output file is mandatory. The analysis is not complete until the file is created.**
 
-- Create or overwrite: `cognia/{project_name}-review-{ref}.md`, where `{ref}` is:
-  - `pr-{number}` when reviewing a PR (e.g. `pr-842`)
-  - `{branch}-vs-{base}` when reviewing a branch (e.g. `feature-payments-vs-main`, sanitised to slug)
-  - `commits-{shortA}-{shortB}` when reviewing a commit range
-  - `worktree` when reviewing uncommitted local changes
+- **Fixed path**: `cognia/cognia-review-findings-{pr-number}.md`
+- This is the single, stable tracking file the user returns to between reviews. Always use this exact name — do not vary by project, PR number, or branch.
 - If the file does not exist, create it and write the complete final report.
-- If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Write only the designated output file(s). Do not modify source files.
-- Do NOT return the report in chat as a substitute for writing the file. A short summary in chat (verdict + score + top 3 findings) is allowed and encouraged.
+- If the file already exists, **replace the entire file content** in one operation. Always overwrite, never append. The current review is what the file represents; prior reviews live in git history.
+- The first line of the report body (after the `# Cognia Code Review` heading) must be a `Last reviewed:` line stating the changeset reference (PR #, branch, commit range, or `worktree`) and an absolute ISO date supplied by the user or derivable from `git`/`gh` metadata. This is how the user identifies which review is on disk.
+- Write only this file. Do not modify source files.
+- Do NOT return the report in chat as a substitute for writing the file. A short summary in chat (verdict + Change Risk Score + top 3 findings + path to the file) is allowed and encouraged.
 
 ---
 
@@ -581,6 +579,9 @@ A diff in a non-primary language must be reviewed at the same depth as the prima
 
 ```
 # Cognia Code Review — [Project Name]
+
+> **Last reviewed:** `{changeset_ref}` · `{YYYY-MM-DD}` · written by `cognia-review`
+> Tracking file (overwritten on every run): `cognia/cognia-review-findings.md`
 
 ## Changeset
 - **Source**: PR #N / branch `feature/x` vs `main` / commits `aaaa..bbbb` / working tree

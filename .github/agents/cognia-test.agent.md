@@ -374,14 +374,16 @@ When auditing:
 
 ## Output File
 
-**Writing the output file is mandatory. The analysis is not complete until the file is created.**
+**Writing the output file is mandatory. The analysis is not complete until the file is created. This file is the single source of truth that the user tracks findings from — every run must produce or refresh it.**
 
-- Create or overwrite: `cognia/{project_name}-test-analysis.md`
+- Create or overwrite: `cognia/cognia-test-findings.md` (fixed name — do **not** parameterise by project name).
+- If the `cognia/` directory does not exist, create it.
 - If the file does not exist, create it and write the complete final report.
 - If the file already exists, replace the entire file content in one operation; always overwrite, never append.
-- Write only the designated output file(s). Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
-- Do NOT return the report in chat as a substitute for writing the file.
+- Write only this designated output file. Preserve unrelated user changes. Do not modify source files unless the user explicitly asks for remediation.
+- Do NOT return the report in chat as a substitute for writing the file. After writing, tell the user the path so they can open it directly.
 - If multiple platforms are detected, include all relevant sections in a single file.
+- Add a header line at the very top of the file containing the run timestamp (ISO 8601, local) and the scope audited (e.g. `Run: 2026-06-11 — scope: full repository`) so the user can see when the findings were last refreshed.
 
 ---
 
