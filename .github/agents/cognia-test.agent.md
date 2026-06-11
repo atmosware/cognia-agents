@@ -369,7 +369,6 @@ When auditing:
 - Networking layer: MockWebServer test coverage present / absent
 - Coroutine tests using `runBlocking` instead of `runTest` (count)
 - Critical user journeys with no UI test
-- CI: unit tests in pipeline? Instrumented tests in pipeline?
 
 ---
 
@@ -410,28 +409,29 @@ When auditing:
 | Statement coverage | XX.X % | |
 | Function / method coverage | XX.X % | |
 | Measurement tier | Tier 1 (existing report) / Tier 2 (freshly measured) / Tier 3 (structural estimate) | |
-| CI threshold | XX % (pass / fail) or `none configured` | [CI config file] |
+| Target | 90 % | Project standard |
+| Verdict vs 90 % | PASS / BORDERLINE / FAIL | |
 
 ### Per-Layer / Per-Module Breakdown
-| Platform | Layer / Module | Coverage % | Notes |
-|----------|---------------|-----------|-------|
-| Backend  | Controllers / Routes | | |
-| Backend  | Services | | |
-| Backend  | Repositories / DAOs | | |
-| Backend  | Domain / Business rules | | |
-| Frontend | Components | | |
-| Frontend | Hooks / Composables | | |
-| Frontend | State / Stores | | |
-| Frontend | Utilities | | |
-| iOS      | ViewModels / Presenters | | |
-| iOS      | Services / Use cases | | |
-| Android  | ViewModels | | |
-| Android  | Repositories / Use cases | | |
-| Android  | DAOs | | |
+| Platform | Layer / Module | Coverage % | Verdict vs 90 % | Notes |
+|----------|---------------|-----------|-----------------|-------|
+| Backend  | Controllers / Routes | | PASS / BORDERLINE / FAIL | |
+| Backend  | Services | | | |
+| Backend  | Repositories / DAOs | | | |
+| Backend  | Domain / Business rules | | | |
+| Frontend | Components | | | |
+| Frontend | Hooks / Composables | | | |
+| Frontend | State / Stores | | | |
+| Frontend | Utilities | | | |
+| iOS      | ViewModels / Presenters | | | |
+| iOS      | Services / Use cases | | | |
+| Android  | ViewModels | | | |
+| Android  | Repositories / Use cases | | | |
+| Android  | DAOs | | | |
 
 *(Include only rows for detected platforms and layers with data. If Tier 3 was used, replace percentages with `tested / total` ratios and add the structural-estimate disclaimer below the table.)*
 
-> **Coverage caveats:** [If Tier 2 or 3 — state explicitly why a real report was not available and the exact command the team should add to CI so the next audit can use Tier 1.]
+> **Coverage verdict vs 90 % target:** [State the overall pass/borderline/fail outcome and name the specific layers + files responsible for any sub-90 % rating. If any rating ≥ 90 % is supported by low-signal tests, call it out as a hidden regression risk.]
 
 ## Testing Maturity Score
 | Platform | Score (1–10) | Dominant Gap |
@@ -444,8 +444,8 @@ When auditing:
 *(Include only detected platforms. 10 = comprehensive, high-quality suite; 1 = no meaningful tests.)*
 
 ## Test Stack Overview
-| Platform | Unit Framework | Integration / UI Framework | Mocking Library | Coverage Tool | CI Integration |
-|----------|--------------|--------------------------|----------------|--------------|---------------|
+| Platform | Unit Framework | Integration / UI Framework | Mocking Library | Coverage Tool |
+|----------|--------------|--------------------------|----------------|--------------|
 
 ---
 
@@ -467,7 +467,6 @@ When auditing:
 | Unhappy path coverage | | | |
 | Mock/stub discipline | | | |
 | Flakiness risk | | | |
-| CI integration | | | |
 
 **Overall test quality: Good / Needs Improvement / Poor**
 
@@ -525,7 +524,6 @@ Issues found in existing tests that reduce their reliability or signal value.
 ## Test Infrastructure Recommendations
 | # | Platform | Gap | Recommended Tool / Approach | Priority |
 |---|---------|-----|----------------------------|---------|
-| | | Coverage threshold enforcement in CI | [tool: nyc/jacoco/xcode coverage gate] | |
 | | | Mutation testing | [Stryker / PITest / mutmut] — validates test assertions are meaningful | |
 | | | Contract testing | [Pact / OpenAPI validator] — catches API breaking changes | |
 | | | Visual regression | [Percy / Chromatic] — catches unintended UI changes | |
