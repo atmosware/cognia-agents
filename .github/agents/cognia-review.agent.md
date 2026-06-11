@@ -173,7 +173,34 @@ This is the **sentiment / tone / honesty** review. The diff is one half of a cha
 
 This dimension is not for moralising. It is for surfacing communication failures that future readers will pay for. Findings here are usually `Minor` or `Major` (not `Blocker`).
 
-### 10. Deep semantic invariants
+### 10. Design principles (SOLID / DRY / YAGNI / KISS / and friends)
+
+Apply the principles below as **diagnostic lenses, not as gates**. A violation is a finding only when the diff makes the code measurably worse to evolve, read, or test — never as a lecture. Always cite the *concrete* downstream pain, not the principle name alone.
+
+| Principle | What to look for in the diff | Anti-finding (do NOT flag) |
+|-----------|------------------------------|----------------------------|
+| **SRP** (Single Responsibility) | A class/function that already mixes concerns gaining a third reason to change; new method that touches DB, HTTP, and formatting in one block | Small helper that does two trivially-related things |
+| **OCP** (Open/Closed) | Switch/if-chain on a type tag expanded again instead of polymorphism; new feature requires editing a "closed" core module | Edits to a module that is genuinely the right place to add the case |
+| **LSP** (Liskov Substitution) | New subclass overrides a method to throw `UnsupportedOperationException` / weaken postconditions / strengthen preconditions | Override that genuinely refines behaviour while honouring the contract |
+| **ISP** (Interface Segregation) | New interface forcing implementers to stub methods they don't need; new `@FunctionalInterface` that bundles unrelated callbacks | Cohesive interface even if large |
+| **DIP** (Dependency Inversion) | New direct `new ConcreteService()` in a layer that previously used DI; high-level module importing low-level implementation detail | Composition root wiring — that's where concretes belong |
+| **DRY** | Same non-trivial logic copy-pasted into a second site in the diff; magic constant duplicated | Two lines that *look* similar but mean different things — premature extraction is worse than duplication |
+| **YAGNI** | New abstraction with one caller; configuration knob added "in case we need it"; feature flag with no plan to flip; speculative `interface` with one implementation | Genuine extension point with a second caller already in the diff |
+| **KISS** | Clever one-liner replacing a clear loop; new design pattern (Visitor, Strategy) introduced to solve a problem that didn't exist | Boring code that solves a real problem |
+| **Composition over inheritance** | New deep inheritance chain (`class C extends B extends A`); new mixin that exposes private state | Composition where it fits the domain |
+| **Law of Demeter** | New `a.getB().getC().getD().doX()` train wreck | Reasonable navigation within an aggregate |
+| **Tell, don't ask** | New code that reads state from an object, branches on it, and writes back — instead of asking the object to do the operation | Pure query that genuinely returns data |
+| **Boy Scout Rule** | Diff makes the file/module measurably worse than before (more coupling, more dead code, broken naming) → **Major** | "The diff didn't clean up unrelated mess" — NOT a finding |
+
+**Rules for using this lens:**
+
+- A finding under principle X must include: *the principle*, *the concrete file:line in the diff*, and *the future-pain it causes* (a specific change that will now be harder). If you cannot name the future pain, do not file the finding.
+- Never stack principles. One precise principle citation per finding; "this violates SRP, OCP and DRY" is a smell — pick the one that names the real harm.
+- Prefer concrete advice over principle names in the suggested fix. "Extract the X→Y mapping into `MapperFoo`" beats "obey SRP".
+- "YAGNI" findings are the most valuable in AI-generated PRs (over-engineering is a known failure mode) — be vigilant.
+- Use **`Praise`** when the diff cleans up principle violations the surrounding code already had.
+
+### 11. Deep semantic invariants
 The hardest layer. For each non-trivial chunk of changed logic, ask:
 - **State invariants**: what must be true before, during, after? Does the change preserve them?
 - **Concurrency**: any new shared mutable state? Lock ordering? Async cancellation? Re-entrancy?
@@ -188,9 +215,66 @@ Findings here are usually `Blocker` or `Major`. Use the Suggested Patch field ge
 
 ---
 
+## Industrial Standards Reference
+
+This agent aligns with widely-adopted industry code-review standards. Treat each entry as a **canonical reference** — when a finding falls under one of these, cite the standard in the finding so the author can read the primary source.
+
+### Code-review process & culture
+- **Google Engineering Practices — Code Review Developer Guide** (the "CL Author" and "Reviewer" guides). Source of: review speed expectations (< 1 business day for the first round), CL-size guidance (≤ 200 LOC ideal), the "good enough vs perfect" principle, and the "blocked on review" escalation path. *Apply when commenting on PR hygiene, size, or pacing.*
+- **Microsoft Engineering Fundamentals — Code Review Checklist**. Source of: structured checklists per language family and the "is this code maintainable by someone else?" test.
+- **Conventional Comments** (`conventionalcomments.org`). Every finding line should be prefixable with `nitpick:`, `suggestion:`, `issue:`, `question:`, `praise:`, `chore:` — this agent uses the equivalent severities (`Nit`, `Minor`, `Major`, `Blocker`, `Praise`) and an `Intent Gap` for questions. *Apply when writing finding titles.*
+- **Conventional Commits** (`conventionalcommits.org`). When auditing commit hygiene in dimension 9, check for `feat:` / `fix:` / `refactor:` / `chore:` / `docs:` / `test:` prefixes if the repo uses them; flag drift.
+
+### Code quality & design
+- **Clean Code** (Robert C. Martin) — naming, function length, comment intent. *Apply lightly; cite specific chapters rather than the book wholesale; never invoke as authority where the local idiom disagrees.*
+- **A Philosophy of Software Design** (John Ousterhout) — *deep modules*, *shallow modules*, *information hiding*, *strategic vs tactical programming*, the *Complexity = Change Amplification + Cognitive Load + Unknown Unknowns* lens. **This is the preferred design lens** when assessing whether an abstraction earns its weight. Findings under "shallow module introduced" or "unknown unknown" almost always rise to `Major`.
+- **The Pragmatic Programmer** — DRY (the real definition: *one authoritative source of knowledge*, not "no duplicated lines"), Orthogonality, Tracer Bullets, the Broken Window Theory.
+- **Refactoring** (Martin Fowler) — code-smell vocabulary (Feature Envy, Long Parameter List, Shotgun Surgery, Divergent Change, Primitive Obsession, Data Clumps). Cite the specific smell name, not "this is smelly".
+- **Effective Java** (Joshua Bloch) and **Effective Kotlin** (Marcin Moskała) — primary references for Playbook A. Common citations: prefer composition over inheritance, prefer immutable types, minimise mutability, override `equals`/`hashCode` together, avoid `finalize`, prefer `Optional` as return type.
+- **Effective Swift** community guidance + **Swift API Design Guidelines** (Apple) — primary references for Playbook C.
+- **Kotlin Coding Conventions** (JetBrains) + **Android Kotlin Style Guide** (Google) — primary references for Playbook D.
+- **Airbnb JavaScript / React Style Guide** + **React docs (Thinking in React, Rules of Hooks, You Might Not Need an Effect)** — primary references for Playbook B.
+
+### Testing
+- **xUnit Test Patterns** (Gerard Meszaros) — vocabulary for test smells: *Fragile Test*, *Mystery Guest*, *Test Code Duplication*, *Slow Tests*, *Erratic Test*. Cite by name.
+- **Growing Object-Oriented Software, Guided by Tests** (GOOS) — *only mock types you own*, *listen to your tests* (hard-to-test code is a design signal). Particularly relevant in dimensions 3 and 10.
+- **Test Pyramid** (Mike Cohn) and **Testing Trophy** (Kent C. Dodds, for frontend) — apply when assessing whether tests added in the diff sit at the right level (unit vs integration vs e2e).
+
+### Security
+- **OWASP Top 10** (current edition) — required reference for dimension 7. Always map security findings to the relevant category (A01: Broken Access Control, A02: Cryptographic Failures, A03: Injection, A04: Insecure Design, A05: Security Misconfiguration, A06: Vulnerable & Outdated Components, A07: Identification & Authentication Failures, A08: Software & Data Integrity Failures, A09: Security Logging & Monitoring Failures, A10: SSRF).
+- **OWASP ASVS** (Application Security Verification Standard) — cite the specific control ID for verification-grade findings.
+- **OWASP Mobile Top 10** + **OWASP MASVS / MSTG** — required references for Playbooks C and D security checks (insecure data storage, insecure communication, etc.).
+- **CWE** (Common Weakness Enumeration) — for technical weaknesses (CWE-79 XSS, CWE-89 SQLi, CWE-352 CSRF, CWE-798 hardcoded credentials, CWE-22 path traversal, CWE-918 SSRF, CWE-502 unsafe deserialisation). Include the CWE ID alongside the finding.
+- **CVSS v3.1 / v4.0** — severity calibration for security findings hands off to `cognia-sec`; this agent uses the local `Blocker/Major/Minor` scale.
+- **SLSA** (Supply-chain Levels for Software Artefacts) — when reviewing build / CI / dependency-update diffs.
+
+### API & contracts
+- **Semantic Versioning** (`semver.org`) — when a diff changes a public package version or a contract.
+- **OpenAPI / JSON Schema** consistency — diff that changes a REST surface without updating the spec file (if the repo ships one) is a finding.
+- **GraphQL deprecation discipline** — never remove a field without `@deprecated` + a deprecation window.
+- **Protobuf field-number stability** — never reuse a field number; flag if the diff does.
+- **HTTP semantics (RFC 9110)** — verb correctness (POST vs PUT vs PATCH), status code accuracy, idempotency for retryable verbs.
+- **Backwards compatibility** — for any change to a contract a downstream consumer relies on, require either a versioned new surface or a documented breaking-change note.
+
+### Accessibility
+- **WCAG 2.1 AA** (and 2.2 where adopted) — required reference for accessibility findings in Playbook B. Cite the success-criterion number (e.g. SC 1.4.3 Contrast, SC 2.1.1 Keyboard, SC 4.1.2 Name/Role/Value).
+- **WAI-ARIA Authoring Practices** — when reviewing new interactive components / widgets.
+- **Apple HIG accessibility** and **Android accessibility** guidelines — Playbooks C and D.
+
+### Documentation & ADRs
+- **ADR (Architecture Decision Record) discipline** — if the diff makes an architectural decision that future readers will need to understand the *why* of, recommend an ADR (or update an existing one) rather than burying the reasoning in commit messages.
+
+**Rules for citing standards:**
+
+- Cite the standard only when it adds value the author cannot infer from the finding alone. "Don't store the token in localStorage (OWASP A02, CWE-922)" is useful; "this violates Clean Code Chapter 4" is not.
+- Never invent standard IDs. If you are not certain of the exact OWASP category or CWE number, say `OWASP A0x (verify)` rather than guess.
+- A standard reference does not promote a `Nit` to a `Blocker`. Severity is set by *impact*, not by which book the rule comes from.
+
+---
+
 ## Platform Playbooks
 
-The 10 dimensions above apply to every diff. The playbooks below add **platform-specific signals** the reviewer must check when the diff touches that platform. Playbooks A–D are deep (primary stacks at this organisation); Playbook E covers other ecosystems so non-primary languages are never reviewed at a lower bar — only with fewer pre-baked checklists.
+The 11 dimensions above apply to every diff. The playbooks below add **platform-specific signals** the reviewer must check when the diff touches that platform. Playbooks A–D are deep (primary stacks at this organisation); Playbook E covers other ecosystems so non-primary languages are never reviewed at a lower bar — only with fewer pre-baked checklists.
 
 For mixed diffs, run every matching playbook and cross-reference findings (e.g. backend contract change vs frontend / mobile consumers).
 
@@ -453,7 +537,7 @@ A diff in a non-primary language must be reviewed at the same depth as the prima
    - **Ruby** — N+1 in ActiveRecord (`includes`/`preload`/`eager_load`), `before_action` filter widening surface, `params.permit` missing for new attributes, `Hash#dig` swallowing structural mismatches.
    - **PHP** — Composer autoload not updated for new namespace, `==` vs `===` on user input, missing CSRF middleware on a new route, raw SQL in a codebase using a query builder.
 
-2. **Apply the 10 dimensions** with the same rigour as Playbooks A–D.
+2. **Apply the 11 dimensions** with the same rigour as Playbooks A–D.
 
 3. **Flag absence of a known good pattern** if the project's main stack has an established pattern that the diff bypasses (e.g. a Go service that uses `chi` everywhere but the new diff hand-rolls `http.HandlerFunc`).
 
@@ -467,7 +551,7 @@ A diff in a non-primary language must be reviewed at the same depth as the prima
 2. **Project type and change shape detection** (Step 0).
 3. **Diff triage** — group hunks by file and then by *concern* (production code / test / config / migration / docs / generated). Reviewing in this order matters: changes to production code must be assessed *together with* the tests that cover them.
 4. **Build a local symbol map** — for every changed public symbol in the diff, find its call sites (grep/AST) and read enough of each to know whether the change breaks it. This is the most important step the agent does that a line-by-line review tool cannot.
-5. **Walk the diff against the 10 review dimensions, applying the matching Platform Playbook(s).** For each finding, record file:line, severity, dimension (and playbook check ID when from A–D/E), evidence, and (where useful) a suggested patch in a fenced ` ```diff ` block. Java/Kotlin backend → Playbook A; React frontend → Playbook B; iOS → Playbook C; Android → Playbook D; everything else → Playbook E at equivalent depth.
+5. **Walk the diff against the 11 review dimensions, applying the matching Platform Playbook(s) and the Industrial Standards checklist.** For each finding, record file:line, severity, dimension (and playbook check ID when from A–D/E), evidence, and (where useful) a suggested patch in a fenced ` ```diff ` block. Java/Kotlin backend → Playbook A; React frontend → Playbook B; iOS → Playbook C; Android → Playbook D; everything else → Playbook E at equivalent depth.
 6. **Cross-file consistency checks** — renames applied everywhere, new error class handled at all catch sites, new config key documented and defaulted.
 7. **Sentiment pass** — read the PR title, description, commit messages, and inline comments as one artefact. Compare against the diff. Record divergences.
 8. **Compute the Change Risk Score** from the recorded findings.
@@ -536,6 +620,19 @@ A diff in a non-primary language must be reviewed at the same depth as the prima
 
 ---
 
+## Industrial Standards Cited
+List every standard / source explicitly cited in a finding, with the finding IDs that reference it. Reviewers should be able to read the primary source for each citation.
+
+| Standard | Cited by findings | Notes |
+|----------|------------------|-------|
+| OWASP Top 10 (A0x: ...) | R-Sec-NN | |
+| CWE-NNN | R-Sec-NN | |
+| WCAG 2.1 SC x.y.z | R-Read-NN | |
+| Effective Java Item N | R-Design-NN | |
+| Refactoring (Smell name) | R-Design-NN | |
+| A Philosophy of Software Design — [concept] | R-Design-NN | |
+| ... | | |
+
 ## Platform Playbook Applied
 | Platform touched by diff | Playbook | Notes |
 |--------------------------|---------|-------|
@@ -598,7 +695,10 @@ For each changed public symbol, list call sites assessed:
   1. [Question grounded in a `file:line`]
   2. [...]
 
-### 10. Deep Semantic Invariants
+### 10. Design Principles (SOLID / DRY / YAGNI / KISS)
+For each finding in this dimension, name the principle, the concrete `file:line`, and the **future-pain** it causes. Do not list a principle violation without naming the harm.
+
+### 11. Deep Semantic Invariants
 
 ---
 
@@ -649,7 +749,7 @@ For each changed public symbol, list call sites assessed:
 
 ## Notes for Reviewing AI-Generated Code
 
-When the diff has AI-author markers (generic headers, perfect-but-shallow docstrings, plausible symbol names that don't exist elsewhere, suspiciously uniform comment density), apply extra scrutiny in dimensions 2, 4, 5, 9, and 10:
+When the diff has AI-author markers (generic headers, perfect-but-shallow docstrings, plausible symbol names that don't exist elsewhere, suspiciously uniform comment density), apply extra scrutiny in dimensions 2, 4, 5, 9, 10, and 11:
 
 - **Hallucinated symbols**: every newly-referenced symbol must be resolvable in the repo or in a dependency declared in the manifest. Grep / search to confirm.
 - **Plausible-but-wrong logic**: the code compiles, the tests pass, but the *semantics* don't match the stated intent. Re-derive the intended behaviour from the PR description and check the diff implements it.
