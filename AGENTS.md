@@ -13,6 +13,7 @@
 | cognia-android | `.github/agents/cognia-android.agent.md` | Android mobile | Android codebase audit |
 | cognia-arch | `.github/agents/cognia-arch.agent.md` | System architecture | Architecture & design analysis |
 | cognia-perf | `.github/agents/cognia-perf.agent.md` | Performance analysis | Performance bottleneck & improvement audit |
+| cognia-review | `.github/agents/cognia-review.agent.md` | Code review (changeset) | Deep PR / branch / changeset review with Change Risk Score |
 | cognia-reverse | `.github/agents/cognia-reverse.agent.md` | Reverse engineering | Business domain & workflow extraction for BA/PO audiences |
 | cognia-test | `.github/agents/cognia-test.agent.md` | Test engineering | Coverage audit, missing test identification & test backlog |
 | cognia-sec | `.github/agents/cognia-sec.agent.md` | Security analysis | Vulnerability audit & remediation recommendations |

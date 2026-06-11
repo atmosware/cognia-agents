@@ -15,6 +15,7 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 | `cognia-ios` | iOS mobile | Full iOS codebase audit: screens, components, networking, navigation, state management |
 | `cognia-perf` | Performance analysis | Auto-detects platform(s) and audits for bottlenecks: slow queries, large bundles, blocking threads, memory issues — with a prioritised improvement roadmap |
 | `cognia-po` | Product ownership | Feature inventory, user stories, requirements gaps, business value mapping, and backlog recommendations |
+| `cognia-review` | Code review (changeset) | Deep PR / branch / changeset review across structural, semantic, architectural, regression, performance, security, test-alignment and communication-quality dimensions — with file:line findings, suggested patches, and a Change Risk Score |
 | `cognia-reverse` | Reverse engineering | Extracts business domain, user roles, workflows, business rules, and integrations from code — output written for business analysts and product owners |
 | `cognia-sec` | Security analysis | Auto-detects platform(s) and audits for vulnerabilities: injection, broken auth, insecure storage, exposed secrets, dependency CVEs — with a CVSS-aligned remediation roadmap |
 | `cognia-tech` | Technical quality | Code quality, tech debt, dependency audit, security signals, and test coverage gaps |

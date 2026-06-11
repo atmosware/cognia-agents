@@ -68,6 +68,15 @@
       "status": "active"
     },
     {
+      "name": "cognia-review",
+      "phase": "advisory",
+      "tier": "1",
+      "agent_path": ".github/agents/cognia-review.agent.md",
+      "outputs": ["cognia/cognia-review-findings.md"],
+      "installer": true,
+      "status": "active"
+    },
+    {
       "name": "cognia-reverse",
       "phase": "advisory",
       "tier": "1",
