@@ -58,6 +58,20 @@ State the detected platform(s) explicitly before proceeding.
 
 ## Coverage Measurement Protocol
 
+### Coverage Rate Target
+
+**The project's required coverage target is `≥ 90%` (line coverage) on every measurable layer.** Treat 90 % as the pass/fail line. Every report must explicitly compare the measured rate to this threshold for the overall project and for each layer:
+
+- **Pass:** layer ≥ 90 % — record as `PASS (XX.X% ≥ 90%)`.
+- **Borderline:** layer 85–89.9 % — record as `BORDERLINE (XX.X%)` and list the specific files dragging it below 90 %.
+- **Fail:** layer < 85 % — record as `FAIL (XX.X% < 90%)` and treat closing the gap to 90 % as a **Critical** or **High** severity recommendation (severity by business-criticality of the layer).
+
+If the overall rate is below 90 %, the executive summary must lead with that fact, name the specific layers and files responsible, and rank gap-closure work above all other recommendations except missing Critical-severity tests.
+
+If the overall rate is already ≥ 90 %, the audit still runs in full — the agent must verify that the 90 %+ rate is not propped up by low-signal tests (snapshot-only files, assertion-free tests, generated-code coverage, tests that exercise but don't assert). Flag any layer whose nominal coverage is ≥ 90 % but whose **Test Quality Assessment** rating is Poor as a hidden regression risk, even though the number passes.
+
+### Measurement Tiers
+
 Every report **must** include an Overall Test Coverage Rate. Use this three-tier strategy, in order, and clearly label which tier was used:
 
 **Tier 1 — Read an existing coverage report (preferred).**
@@ -100,7 +114,7 @@ Always include this disclaimer when using Tier 3: *"This is a structural estimat
 Whichever tier is used, the report must state:
 - The **tier** (1, 2, or 3) and the **source** (artifact path, command output, or estimation method).
 - A **per-layer breakdown** wherever data allows (e.g. service layer 78 %, controller layer 91 %, repository layer 42 %).
-- The **coverage threshold** configured in CI, if any, and whether the current rate passes it.
+- A pass/borderline/fail verdict against the **90 % target** for the overall project and for each layer.
 
 ## Severity Calibration for Gaps
 
@@ -122,7 +136,6 @@ When evaluating existing tests, assess against these dimensions:
 | **Mock/stub discipline** | Mocks only what is necessary; real collaborators used in integration tests | Everything mocked including the subject under test |
 | **Flakiness risk** | No time-dependent logic, no hardcoded delays, deterministic data | `sleep()` / `wait()` calls, order-dependent assertions, random data without seeds |
 | **Test data** | Minimal, self-describing fixtures | Massive shared fixtures; production data copies |
-| **CI integration** | Tests run in CI on every PR | No CI config or tests excluded from CI |
 
 ---
 
@@ -141,9 +154,8 @@ When evaluating existing tests, assess against these dimensions:
 9. **Error path coverage**: For each major service method and endpoint, check whether error scenarios (invalid input, DB failure, external service failure) are tested.
 10. **Background job coverage**: Check whether scheduled tasks and background workers have unit tests covering their execution logic.
 11. **Test quality audit**: Sample 5–10 existing test files and assess against the quality dimensions defined above. Flag systematic issues (e.g. "all tests use a single global mock, no teardown").
-12. **Mocking strategy**: Assess how external dependencies (DB, HTTP clients, queues) are mocked. Flag over-mocking (mocking the subject under test) and under-mocking (integration tests that hit live external services in CI).
-13. **CI integration**: Check `.github/workflows`, `.gitlab-ci.yml`, `Jenkinsfile`, or equivalent — verify tests are executed and coverage thresholds are enforced.
-14. **Contract / API tests**: Check for OpenAPI-based contract tests, Pact, or Supertest-style integration tests that validate the full HTTP contract.
+12. **Mocking strategy**: Assess how external dependencies (DB, HTTP clients, queues) are mocked. Flag over-mocking (mocking the subject under test) and under-mocking (integration tests that hit live external services).
+13. **Contract / API tests**: Check for OpenAPI-based contract tests, Pact, or Supertest-style integration tests that validate the full HTTP contract.
 
 ### A1a. Backend Test Stack Matrix (use to drive identification in step 1)
 
@@ -169,15 +181,14 @@ When auditing:
 - For **Go**, flag tests that don't use `t.Parallel()` where safe, and use of `time.Sleep` instead of `httptest.Server` synchronisation.
 
 ### A2. Key Metrics to Surface
-- **Overall coverage rate** for this backend (line / branch / method %), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3
-- **Per-layer coverage**: controllers/routes, services, repositories/DAOs, domain/business rules
+- **Overall coverage rate** for this backend (line / branch / method %), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3, with pass/borderline/fail verdict against the 90 % target
+- **Per-layer coverage**: controllers/routes, services, repositories/DAOs, domain/business rules — each marked PASS / BORDERLINE / FAIL vs 90 %
 - Test file count by type (unit / integration / e2e)
 - Service classes with no corresponding test file (count + list)
 - Endpoints with no integration test (count + list)
 - Business rules with no test case (count + list)
 - Protected routes missing negative auth tests
 - Existing test quality issues found (count by issue type)
-- CI: tests in pipeline? Coverage threshold enforced?
 
 ---
 
@@ -197,8 +208,7 @@ When auditing:
 10. **Accessibility test coverage**: Check for `@testing-library/jest-axe`, `axe-core`, or Playwright accessibility checks. Flag pages with interactive elements that have no accessibility test.
 11. **Snapshot test audit**: Locate snapshot tests — flag excessive snapshot use (snapshotting entire page trees) which creates brittle, low-signal tests. Recommend targeted interaction/behaviour tests instead.
 12. **Test quality audit**: Sample existing test files. Flag: missing `userEvent` in favour of `fireEvent` (lower fidelity), testing implementation details (internal state, class names) instead of user-visible behaviour, missing async `waitFor` wrappers.
-13. **CI integration**: Verify tests and coverage thresholds run in CI. Check for Lighthouse CI or equivalent for performance regression testing.
-14. **Visual regression**: Check for Percy, Chromatic, or similar visual regression tooling. Flag absence for component-heavy UIs.
+13. **Visual regression**: Check for Percy, Chromatic, or similar visual regression tooling. Flag absence for component-heavy UIs.
 
 ### B1a. Frontend Test Stack Matrix (use to drive identification in step 1)
 
@@ -225,15 +235,14 @@ When auditing:
 - For **React Native**, flag UI tests that depend on `Platform.OS` runtime detection without per-platform test runs.
 
 ### B2. Key Metrics to Surface
-- **Overall coverage rate** for this frontend (line / branch / statement / function %), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3
-- **Per-layer coverage**: components, hooks/composables, state/stores, utilities
+- **Overall coverage rate** for this frontend (line / branch / statement / function %), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3, with pass/borderline/fail verdict against the 90 % target
+- **Per-layer coverage**: components, hooks/composables, state/stores, utilities — each marked PASS / BORDERLINE / FAIL vs 90 %
 - Test file count by type (unit / integration / e2e / snapshot / a11y)
 - Components with no test file (count + list of high-risk ones)
 - Custom hooks with no unit test
 - Critical user journeys with no e2e coverage
 - Forms missing error-path tests
 - Snapshot test count and quality assessment
-- CI: tests in pipeline? Coverage threshold enforced?
 
 ---
 
@@ -254,7 +263,6 @@ When auditing:
 11. **Local persistence coverage**: Check whether Core Data / Realm / SQLite operations are tested with in-memory stores. Flag untested data layer operations.
 12. **Error & edge case coverage**: Verify that failure states (network error, empty data, decode failure, permission denied) are tested in ViewModels and services.
 13. **Test quality audit**: Sample existing test files. Flag: force-unwrapping in tests, missing `setUp`/`tearDown`, XCUITest tests that depend on real network calls, async tests without `expectation`/`async await` handling.
-14. **CI integration**: Check for Fastlane (`scan` / `xcodebuild test`), Xcode Cloud (`ci_scripts/`), GitHub Actions, Bitrise, or CircleCI config running tests. Verify simulator destination is specified, parallel testing is configured, code coverage is enabled at the scheme level, and that test plans (`.xctestplan`) define separate unit/UI/snapshot configurations.
 
 ### C1a. iOS Test Stack Matrix (use to drive identification in step 1)
 
@@ -272,12 +280,11 @@ For the detected app architecture and Swift version, verify which libraries are 
 | **UI / E2E** | **XCUITest** | **Maestro**, KIF (legacy), EarlGrey (deprecated), Appium | Flag XCUITest suites that rely on `app.staticTexts["Some Label"]` instead of accessibility identifiers; flag missing `waitForExistence(timeout:)`; flag `Thread.sleep`/`usleep` calls; flag UI tests that hit a real backend instead of using a launch-argument-driven mock mode. |
 | **Snapshot / screenshot** | n/a | **`swift-snapshot-testing`** (Point-Free), **iOSSnapshotTestCase** (FB, legacy), **SnapshotTestingPlugin** | Flag missing dark-mode / dynamic-type / RTL snapshot variants for components shipped to App Store; flag snapshot tests committed without reference images; flag a single device size only. |
 | **Networking mocks** | `URLProtocol` subclass, `URLSession` injection | **OHHTTPStubs**, **Mocker**, **Cuckoo+URLSession**, WireMock (process-external) | Flag projects making real network calls in unit tests; flag missing tests for non-2xx responses and decode failures. |
-| **Persistence** | In-memory Core Data stack, SwiftData `ModelConfiguration(isStoredInMemoryOnly: true)`, in-memory `NSPersistentContainer` | Realm in-memory configuration, GRDB in-memory database | Flag DAOs / repositories tested against on-disk stores in CI (slow + flaky); flag missing migration tests. |
+| **Persistence** | In-memory Core Data stack, SwiftData `ModelConfiguration(isStoredInMemoryOnly: true)`, in-memory `NSPersistentContainer` | Realm in-memory configuration, GRDB in-memory database | Flag DAOs / repositories tested against on-disk stores (slow + flaky); flag missing migration tests. |
 | **Dependency injection in tests** | Initialiser injection, protocol-based seams | **Factory**, **Swinject**, **Needle**, `@Dependency` (TCA) | Flag use of singletons (`shared`) accessed directly inside SUT — untestable without swizzling. |
 | **Property / fuzz** | n/a | **SwiftCheck**, **swift-testing-property-tests** | Optional but valuable for parsers, decoders, formatters. |
 | **Performance / benchmarks** | `measure { }` / `XCTMeasureOptions` | swift-collections-benchmark | Flag `measure` blocks committed without baselines. |
 | **Accessibility** | XCUITest `app.descendants(matching: .any).element(matching: ...)` queries + `isAccessibilityElement` checks | Apple's **Accessibility Audit API** (Xcode 15+ `app.performAccessibilityAudit()`), GTXiLib (legacy) | Flag absence of any accessibility test for an app submitted to App Store. |
-| **CI tooling** | `xcodebuild test`, Xcode Cloud | **Fastlane `scan`**, Bitrise Xcode steps, GitHub Actions `xcodebuild`, **`xcbeautify`** / `xcpretty` for log formatting, **Test Plans** (`.xctestplan`) for unit/UI separation | Flag CI that runs all tests in a single plan (slow feedback); flag missing `-resultBundlePath` for coverage parsing. |
 
 When auditing:
 - For **SwiftUI** apps, flag the common pattern of "no view tests because SwiftUI is declarative" — ViewInspector and snapshot testing both work and a missing one is a gap, not a constraint.
@@ -287,8 +294,8 @@ When auditing:
 - If the project uses **Tuist or XcodeGen**, verify test targets are declared in the manifest (`Project.swift` / `project.yml`) — silent drift between manifest and `pbxproj` is common.
 
 ### C2. Key Metrics to Surface
-- **Overall coverage rate** for the iOS target (line %, parsed from `xcresult`), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3
-- **Per-layer coverage**: ViewModels/Presenters, Services, Networking, Persistence
+- **Overall coverage rate** for the iOS target (line %, parsed from `xcresult`), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3, with pass/borderline/fail verdict against the 90 % target
+- **Per-layer coverage**: ViewModels/Presenters, Services, Networking, Persistence — each marked PASS / BORDERLINE / FAIL vs 90 %
 - XCTest unit test file count vs. source file count ratio
 - XCUITest file count and journey coverage
 - ViewModels with no test file (count + list)
@@ -296,7 +303,6 @@ When auditing:
 - Networking layer: mocked test coverage present / absent
 - Critical user journeys with no UI test
 - Test quality issues found (count by type)
-- CI: tests in pipeline?
 
 ---
 
@@ -318,7 +324,6 @@ When auditing:
 12. **Dependency injection in tests**: Verify Hilt test modules (`@TestInstallIn`) or Koin test overrides are used so tests don't depend on production DI bindings. Flag tests that use production singletons.
 13. **Error & edge case coverage**: Verify that error states (network failure, empty list, DB error) are tested in ViewModels and repositories.
 14. **Test quality audit**: Sample existing test files. Flag: `Thread.sleep()` in tests, missing assertions on `StateFlow` using Turbine, Espresso tests without `IdlingResource`, `@RunWith(AndroidJUnit4::class)` on tests that could be pure JVM.
-15. **CI integration**: Check GitHub Actions / Bitrise / CircleCI / Jenkins config. Verify unit tests and instrumented tests are in the pipeline (emulator via `gradle-managed-devices`, Firebase Test Lab, AWS Device Farm, or Genymotion). Check for JaCoCo / Kover coverage reporting, Gradle remote build cache for test re-runs, and module-level parallel test execution.
 
 ### D1a. Android Test Stack Matrix (use to drive identification in step 1)
 
@@ -340,12 +345,11 @@ For the detected app architecture and Kotlin/Java mix, verify which libraries ar
 | **Compose UI testing** | **`createAndroidComposeRule`** / **`createComposeRule`**, `ComposeTestRule`, `SemanticsNodeInteraction` | n/a | Flag Compose screens with no `composeTestRule` test; flag tests using `onNodeWithText("…")` for non-localised strings instead of `useUnmergedTree = true` + test tags; flag missing `waitUntil { … }` for state-driven assertions. |
 | **Views (XML) UI testing** | **Espresso** (`onView`, `withId`, `withText`), `ActivityScenarioRule` | Barista (LinkedIn — Espresso wrapper, simpler API), Robotium (legacy) | Flag Espresso tests with `Thread.sleep`; flag absence of `IdlingResource` for async work; flag fragmented use of both Espresso and Robotium. |
 | **E2E / cross-screen** | UI Automator | **Maestro** (YAML-based, preferred for new projects), Appium, Detox (RN-only) | Flag absence of E2E coverage for critical journeys (sign-in, onboarding, checkout); for new projects, Maestro is preferred over UI Automator due to lower flakiness. |
-| **Screenshot / visual regression** | n/a | **Paparazzi** (JVM, no emulator), **Roborazzi** (Robolectric-based, supports Compose), **Shot** (Karumi, legacy), **Showkase** (Compose component catalogue) + screenshots | Flag Compose-heavy projects with no screenshot tests; flag screenshot tests committed without reference PNGs; flag Paparazzi tests run only locally and not in CI. |
+| **Screenshot / visual regression** | n/a | **Paparazzi** (JVM, no emulator), **Roborazzi** (Robolectric-based, supports Compose), **Shot** (Karumi, legacy), **Showkase** (Compose component catalogue) + screenshots | Flag Compose-heavy projects with no screenshot tests; flag screenshot tests committed without reference PNGs. |
 | **Robolectric** | n/a | **Robolectric** (JVM-side Android runtime) | Flag projects using Robolectric for everything (loses signal vs real device); flag projects using only instrumented tests where Robolectric would give 10x faster feedback (e.g. resource loading, View inflation). |
-| **Coverage** | n/a | **JaCoCo**, **Kover** (Kotlin-native, preferred for Kotlin projects), Codecov / Coveralls / Sonar uploads | Flag projects with `jacoco` plugin applied but no `jacocoTestReport` task wired into CI; flag separate coverage reports per module that are never aggregated. |
+| **Coverage** | n/a | **JaCoCo**, **Kover** (Kotlin-native, preferred for Kotlin projects), Codecov / Coveralls / Sonar uploads | Flag projects with `jacoco` plugin applied but no `jacocoTestReport` task; flag separate coverage reports per module that are never aggregated. |
 | **Property / fuzz** | n/a | **Kotest property testing**, jqwik, jcheck | Optional but valuable for parsers, formatters, business-rule engines. |
 | **Benchmark** | **`androidx.benchmark` microbenchmark**, **Macrobenchmark** (`MacrobenchmarkRule`, `BaselineProfileRule`) | n/a | Flag apps shipping without baseline profiles or startup benchmarks; flag benchmark tests committed without baseline JSON. |
-| **CI tooling** | `./gradlew test`, `./gradlew connectedAndroidTest`, **Gradle Managed Devices** (`@RunOnGradleManagedDevice`) | **Firebase Test Lab**, AWS Device Farm, BrowserStack App Live, Genymotion Cloud, **Gradle Build Cache** (remote) | Flag CI running instrumented tests on a single emulator API level only; flag absence of Firebase Test Lab / Gradle Managed Devices for an app with high device fragmentation; flag missing test sharding for slow suites. |
 
 When auditing:
 - For **Jetpack Compose** apps, screenshot testing (**Paparazzi** or **Roborazzi**) is the closest equivalent to visual regression on the web — flag its absence on any component-heavy Compose codebase.
@@ -356,8 +360,8 @@ When auditing:
 - For **Gradle Version Catalogs** (`libs.versions.toml`), verify test dependencies are pinned in the catalogue, not scattered across `build.gradle` files (drift indicator).
 
 ### D2. Key Metrics to Surface
-- **Overall coverage rate** for the Android module(s) (line / branch %, parsed from JaCoCo or Kover), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3
-- **Per-layer coverage**: ViewModels, Repositories/Use cases, DAOs, Networking
+- **Overall coverage rate** for the Android module(s) (line / branch %, parsed from JaCoCo or Kover), produced via the Coverage Measurement Protocol — Tier 1 → 2 → 3, with pass/borderline/fail verdict against the 90 % target
+- **Per-layer coverage**: ViewModels, Repositories/Use cases, DAOs, Networking — each marked PASS / BORDERLINE / FAIL vs 90 %
 - JVM unit test file count vs. source file count ratio
 - Instrumented / UI test file count and journey coverage
 - ViewModels with no test file (count + list)
