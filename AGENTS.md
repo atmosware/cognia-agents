@@ -10,8 +10,10 @@
 
 | Agent | Canonical Definition | Domain | Trigger |
 |-------|---------------------|--------|---------|
+| cognia-adr | `.github/agents/cognia-adr.agent.md` | Architecture decision records | Interactive ADR interview, challenge, and deviation logging |
 | cognia-android | `.github/agents/cognia-android.agent.md` | Android mobile | Android codebase audit |
 | cognia-arch | `.github/agents/cognia-arch.agent.md` | System architecture | Architecture & design analysis |
+| cognia-asdd | `.github/agents/cognia-asdd.agent.md` | System design documentation | Interactive ASDD interview across 22 sections, optional draw.io diagrams |
 | cognia-perf | `.github/agents/cognia-perf.agent.md` | Performance analysis | Performance bottleneck & improvement audit |
 | cognia-review | `.github/agents/cognia-review.agent.md` | Code review (changeset) | Deep PR / branch / changeset review with Change Risk Score |
 | cognia-reverse | `.github/agents/cognia-reverse.agent.md` | Reverse engineering | Business domain & workflow extraction for BA/PO audiences |
