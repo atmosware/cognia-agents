@@ -8,8 +8,10 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 
 | Agent | Domain | Description |
 |-------|--------|-------------|
+| `cognia-adr` | Architecture decision records | Interactive interview to record a single architectural decision as an ADR — challenges non-best-practice choices, logs deviations, supports superseding an existing Accepted ADR |
 | `cognia-android` | Android mobile | Full Android codebase audit: screens, components, networking, navigation, state management |
 | `cognia-arch` | System architecture | Component map, data flow, service boundaries, scalability, and architectural risk assessment |
+| `cognia-asdd` | System design documentation | Interactive interview to author a full 22-section Application System Design Document — challenges non-best-practice choices, logs deviations, optional draw.io diagrams for architecture/deployment/data-model/inter-service-communication sections |
 | `cognia-backend` | Backend / API | Endpoint inventory, service catalogue, integrations, database schema, auth, and background jobs |
 | `cognia-frontend` | Frontend / Web | Page and route inventory, component catalogue, state management, API integration, and build config |
 | `cognia-ios` | iOS mobile | Full iOS codebase audit: screens, components, networking, navigation, state management |
@@ -25,11 +27,13 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 
 ## Skills
 
-All 13 agents ship with runtime wrappers for Claude Code (`.claude/skills/`), Codex CLI (`.codex/skills/`), and Cursor (`.cursor/rules/`). Three agents additionally include deep procedure documents and standards under `.github/skills/`:
+All 15 agents ship with runtime wrappers for Claude Code (`.claude/skills/`), Codex CLI (`.codex/skills/`), and Cursor (`.cursor/rules/`). Five agents additionally include deep procedure documents and standards under `.github/skills/`:
 
 | Skill folder | Used by | Contents |
 |---|---|---|
+| `.github/skills/cognia-adr` | `cognia-adr` | Interview procedure, challenge/deviation logic, immutability rule |
 | `.github/skills/cognia-arch` | `cognia-arch` | Mermaid diagram procedure, HTML template, STANDARDS.md |
+| `.github/skills/cognia-asdd` | `cognia-asdd` | Interview procedure, update-mode contradiction check, drawio XML + HTML embed templates |
 | `.github/skills/cognia-tech` | `cognia-tech` | Multi-step analysis procedure, scale decomposition, output format |
 | `.github/skills/cognia-ux` | `cognia-ux-design` | Wireframe procedure, design system, WCAG compliance, handoff artifacts |
 
