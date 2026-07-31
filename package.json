@@ -24,7 +24,8 @@
     "sync:wrappers": "node scripts/sync-wrappers.js",
     "check:wrappers": "node scripts/sync-wrappers.js --check",
     "check:todos": "node scripts/check-todos.js",
-    "check:docs": "node scripts/check-docs.js"
+    "check:docs": "node scripts/check-docs.js",
+    "check:asdd-diagrams": "node .github/skills/cognia-asdd/scripts/test-diagram-tools.js"
   },
   "files": [
     "AGENTS.md",

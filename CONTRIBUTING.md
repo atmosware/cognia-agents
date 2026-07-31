@@ -52,12 +52,13 @@ npm run check:todos      # exit 0 = clean, exit 1 = placeholders found
 
 # Check that AGENTS.md and README.md are consistent with roster.json
 npm run check:docs       # exit 0 = consistent, exit 1 = missing entries
+npm run check:asdd-diagrams # validates greenfield/existing ASDD diagram tooling fixtures
 ```
 
 Or run all three at once:
 
 ```bash
-npm run check:wrappers && npm run check:todos && npm run check:docs
+npm run check:wrappers && npm run check:todos && npm run check:docs && npm run check:asdd-diagrams
 ```
 
 Fix any reported failures **before** pushing. The PR checklist (below) requires all three to pass.
