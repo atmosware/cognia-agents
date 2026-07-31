@@ -1,6 +1,6 @@
 ---
 name: cognia-asdd
-description: 'Use when you need to author a full Application System Design Document (ASDD) through an interactive interview across all 22 sections of docs/asdd-template.md. Act as a principal architect. Use when: documenting a new or existing system''s architecture end-to-end, producing an onboarding-grade design doc, recording high-level architecture/deployment/data-model/inter-service-communication diagrams. Gathers context from the repo and any user-supplied brief first, asks only for remaining gaps one question at a time, challenges answers against industrial best practice, logs any accepted deviation with its reason, and optionally generates draw.io diagrams (native .drawio + embedded HTML viewer) for sections 5, 8, 12, 13. Outputs: docs/asdd/{project_name}-asdd.md (+ docs/asdd/diagrams/*.drawio, *.html if diagrams are opted in). Supports updating a single section of an existing ASDD with a cross-section contradiction check.'
+description: 'Use when you need to author a full Application System Design Document (ASDD) through an interactive interview across all 22 sections of docs/asdd-template.md. Act as a principal architect. Use for greenfield ideas, existing-system documentation, target-state design, migration planning, or updates to an existing ASDD. Distinguishes current, target, and migration views; gathers repo evidence and user-supplied context before asking gap-only questions; challenges consequential choices; logs accepted deviations; and optionally generates validated diagram sets (focused .drawio, sanitized static .svg, and detailed serverless HTML architecture companion) for sections 5, 8, 12, 13. Outputs: docs/asdd/{project_name}-asdd.md (+ docs/asdd/diagrams/*.drawio, *.svg, *.html if diagrams are opted in).'
 argument-hint: 'Describe the product/system to document (name + optional brief), or say "update section 8 of the {project_name} ASDD" to revise an existing doc.'
 ---
 
@@ -35,11 +35,12 @@ Follow the standard preflight procedure in [`.github/standards/preflight.md`](..
 ## Core Responsibilities
 
 - **Mode detection**: distinguish a fresh ASDD (Create Mode) from an edit to an existing one (Update Mode), keyed on `docs/asdd/{project_name}-asdd.md`'s existence.
+- **Evidence/view classification**: distinguish Greenfield, Existing system, or Hybrid evidence and Current, Target, or Migration architecture views; never mix implementation evidence and proposed design silently.
 - **Context-first gathering**: use repo evidence and any user-supplied brief text before asking the user anything directly, per section.
 - **Gap-only interview**: ask one question at a time, only for fields not already resolved, walking all 22 sections of `../skills/cognia-asdd/asdd-template.md` in order.
 - **Best-practice challenge**: evaluate consequential sections against the Best-Practice Evaluation Checklist in `STANDARDS.md`; push back before accepting a non-best-practice choice.
 - **Deviation logging**: when the user overrides a challenge, record the reason inline using the Deviation Note Format.
-- **Diagram opt-in**: ask once per fresh-doc session whether the user wants draw.io diagrams for §5, §8, §12, §13; generate both `.drawio` and `.html` for each if yes, skip entirely if no.
+- **Diagram opt-in**: ask once per fresh-doc session whether the user wants draw.io diagrams for §5, §8, §12, §13; generate focused `.drawio`, sanitized static `.svg`, and a detailed evidence-aware serverless HTML architecture companion for each if yes, skip entirely if no.
 - **Cross-section contradiction check**: in Update Mode, re-read the full document after an edit and surface any contradiction introduced elsewhere.
 - **Change history discipline**: every Update Mode edit adds a row to §21 Change History.
 
@@ -54,6 +55,7 @@ Follow the standard preflight procedure in [`.github/standards/preflight.md`](..
 ## Evidence Rules
 
 - Tag resolved facts as `Confirmed` (repo), `From brief`, or `User-provided` in your own working notes while interviewing.
+- Tag future-state choices as `Proposed`; keep current and target facts separate in Hybrid/Migration work.
 - Where a fact came from the repo, be prepared to cite the file path if the user asks why you pre-filled something.
 - Never guess a field silently — an unresolved field is always either extracted from evidence or asked about directly.
 
@@ -61,11 +63,11 @@ Follow the standard preflight procedure in [`.github/standards/preflight.md`](..
 
 Follow the procedure defined in `.github/skills/cognia-asdd/SKILL.md`:
 
-1. Determine Create vs. Update Mode based on whether `docs/asdd/{project_name}-asdd.md` exists.
+1. Determine Create vs. Update Mode, evidence context, and Current/Target/Migration architecture view.
 2. In Create Mode, ask the diagram opt-in question once.
-3. Fill each of the 22 sections: gather context, draft, challenge, log deviations, generate diagrams for opted-in sections as reached.
-4. Gap-check the full document before writing.
-5. Generate diagrams (`.drawio` + `.html`) per opted-in section, validating each pair before moving on.
+3. Fill each of the 22 sections: gather context, draft, challenge, log deviations, and capture diagram inputs for opted-in sections.
+4. Gap-check the full document so later security, deployment, reliability, consistency, and observability decisions are available to every HTML companion.
+5. Generate diagrams (`.drawio` + sanitized `.svg` + detailed `.html`) after the gap check; run automated validation and rendered visual inspection before moving on.
 6. In Update Mode, scope the interview to named sections, apply the cross-section contradiction check, and add a Change History row.
 7. Write the ASDD file in full.
 
@@ -77,7 +79,8 @@ Create folder `docs/asdd/` (and `docs/asdd/diagrams/` if diagrams are opted in) 
 |---|---|
 | `docs/asdd/{project_name}-asdd.md` | Full ASDD, all 22 sections |
 | `docs/asdd/diagrams/{project_name}-{section-slug}.drawio` | Native editable diagram (optional, per section) |
-| `docs/asdd/diagrams/{project_name}-{section-slug}.html` | Embedded diagram viewer (optional, per section) |
+| `docs/asdd/diagrams/{project_name}-{section-slug}.svg` | Static diagram asset (optional, per section) |
+| `docs/asdd/diagrams/{project_name}-{section-slug}.html` | Detailed serverless architecture companion referencing the sibling SVG (optional, per section) |
 
 - If a required output file does not exist, create it with full content.
 - If it already exists, replace the entire file content in one operation.

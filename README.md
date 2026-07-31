@@ -11,7 +11,7 @@ Agents auto-detect the platform(s) present in a project (backend, frontend, iOS,
 | `cognia-adr` | Architecture decision records | Interactive interview to record a single architectural decision as an ADR — challenges non-best-practice choices, logs deviations, supports superseding an existing Accepted ADR |
 | `cognia-android` | Android mobile | Full Android codebase audit: screens, components, networking, navigation, state management |
 | `cognia-arch` | System architecture | Component map, data flow, service boundaries, scalability, and architectural risk assessment |
-| `cognia-asdd` | System design documentation | Interactive interview to author a full 22-section Application System Design Document — challenges non-best-practice choices, logs deviations, optional draw.io diagrams for architecture/deployment/data-model/inter-service-communication sections |
+| `cognia-asdd` | System design documentation | Evidence-aware greenfield/existing/hybrid interview for a full 22-section ASDD, with current/target/migration views and validated static diagram companions |
 | `cognia-backend` | Backend / API | Endpoint inventory, service catalogue, integrations, database schema, auth, and background jobs |
 | `cognia-frontend` | Frontend / Web | Page and route inventory, component catalogue, state management, API integration, and build config |
 | `cognia-ios` | iOS mobile | Full iOS codebase audit: screens, components, networking, navigation, state management |
@@ -33,7 +33,7 @@ All 15 agents ship with runtime wrappers for Claude Code (`.claude/skills/`), Co
 |---|---|---|
 | `.github/skills/cognia-adr` | `cognia-adr` | Interview procedure, challenge/deviation logic, immutability rule |
 | `.github/skills/cognia-arch` | `cognia-arch` | Mermaid diagram procedure, HTML template, STANDARDS.md |
-| `.github/skills/cognia-asdd` | `cognia-asdd` | Interview procedure, update-mode contradiction check, drawio XML + HTML embed templates |
+| `.github/skills/cognia-asdd` | `cognia-asdd` | Evidence/view-aware interview, contradiction checks, focused draw.io + sanitized SVG + detailed static HTML, automated validation, and rendered visual QA |
 | `.github/skills/cognia-tech` | `cognia-tech` | Multi-step analysis procedure, scale decomposition, output format |
 | `.github/skills/cognia-ux` | `cognia-ux-design` | Wireframe procedure, design system, WCAG compliance, handoff artifacts |
 

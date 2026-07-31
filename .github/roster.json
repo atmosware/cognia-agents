@@ -41,6 +41,7 @@
       "outputs": [
         "docs/asdd/{project_name}-asdd.md",
         "docs/asdd/diagrams/{project_name}-{section-slug}.drawio",
+        "docs/asdd/diagrams/{project_name}-{section-slug}.svg",
         "docs/asdd/diagrams/{project_name}-{section-slug}.html"
       ],
       "installer": true,
