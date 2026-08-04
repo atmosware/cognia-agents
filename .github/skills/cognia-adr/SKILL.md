@@ -2,8 +2,8 @@
 name: cognia-adr
 description: 'Use when you need to record a single architectural decision as an Architecture Decision Record (ADR) through an interactive interview. Act as a principal architect. Use when: recording a new architectural decision, documenting why a technology/approach was chosen, updating an existing ADR, superseding a prior decision. Gathers context from the repo and any user-supplied brief first, asks only for remaining gaps one question at a time, challenges any answer that conflicts with industrial best practice, and logs any accepted deviation with its stated reason. Outputs: docs/adr/adr-{NNN}-{slug}.md.'
 argument-hint: 'Describe the architectural decision to record (e.g. "we are choosing Kafka over RabbitMQ for the event bus"), or say "update ADR-003" / "supersede ADR-003" to revise an existing one.'
-version: 1.0.0
-last_reviewed: 2026-07-30
+version: 1.1.0
+last_reviewed: 2026-08-04
 status: Active
 ---
 
@@ -11,6 +11,22 @@ status: Active
 
 ## Role
 **Principal Software Architect & Decision Facilitator** — Interview the user to produce one complete, gap-free Architecture Decision Record for a single decision, challenging any choice that conflicts with industrial best practice before it is recorded, and preserving the user's final call with a documented reason when they choose to override that guidance.
+
+---
+
+## Length & Concision Standard
+
+An ADR is a **short, scannable record**, not a design document or an RFC. Industry norm is 1-2 pages (roughly 300-700 words total). A reader should be able to read the whole thing in under 5 minutes.
+
+- **No sections beyond `adr-000-template.md`.** Do not add "Assumptions", "Inferred Content", appendices, or extra evidence-citation blocks. If something is inferred rather than confirmed, say so in one parenthetical inline (e.g. "`(inferred from repo config)`") — do not give it its own section.
+- **`Context`**: 2-4 sentences. State the trigger and the forces at play. Not a history of the project.
+- **`Decision Drivers`**: up to 5 one-line bullets.
+- **`Options Considered`**: name each option plus **one line** of why it won or lost. Do not write a paragraph per option — that reasoning belongs once, in `Decision`.
+- **`Decision`**: one short paragraph. This is the only prose paragraph in the ADR. Do not repeat the same argument in multiple sections.
+- **`Consequences`**: 1-3 bullets each under Positive/Negative/Risks — not an exhaustive risk register. Pick the consequences that actually matter for this decision.
+- **`References`**: up to 5 items — links, ticket IDs, doc section names. Not verbatim transcriptions of diagrams or source text.
+- If the user's brief or the repo evidence is unusually rich, that is a reason to be selective, not a reason to include all of it. Cite the source (file/section), don't quote it at length.
+- When updating an existing ADR that predates this standard (extra sections, or far over budget), trim it to the current template shape as part of the edit, not just the requested section.
 
 ---
 
@@ -57,15 +73,16 @@ Tag each resolved fact in your working notes as `Confirmed` (repo), `From brief`
 
 Walk through `docs/adr-000-template.md`'s sections in order, asking only about fields not already resolved in Step 2C:
 
-`Status → Date → Deciders → Context → Decision Drivers → Considered Options → Decision → Rationale → Alternatives Considered → Consequences → Related Decisions → References`
+`Status → Date → Deciders → Context → Decision Drivers → Options Considered → Decision → Consequences → Related Decisions → References`
 
 - One question at a time.
 - Prefer multiple-choice when the field has a natural small set of options (e.g. Status: Proposed/Accepted/Rejected/Deprecated).
 - For `Status`, default the question to "Proposed" unless the user states otherwise — do not assume "Accepted" without an explicit confirmation, since that triggers the immutability rule in future updates (see `STANDARDS.md`).
+- Keep every answer to the length budget in **Length & Concision Standard** above — do not expand a one-line answer into a paragraph when drafting the section.
 
 ### Step 4 — Best-Practice Challenge (both modes)
 
-Applies to any section representing a consequential choice: **Decision Drivers, Considered Options, Decision, Consequences**.
+Applies to any section representing a consequential choice: **Decision Drivers, Options Considered, Decision, Consequences**.
 
 1. Evaluate the user's proposed Decision/Options against the **Best-Practice Evaluation Checklist** in `STANDARDS.md`.
 2. If it conflicts or looks infeasible, state the specific concern as a principal architect would: what's wrong, and the concrete risk — then ask the user to reconsider.
@@ -105,16 +122,17 @@ Before writing the file, re-scan the drafted ADR for any remaining `{...}` templ
 
 ## Output Format
 
-Match the exact section order and headings of `adr-000-template.md`. Every section fully filled — no `{...}` tokens remaining. Deviation notes (if any) appear as a blockquote directly beneath the heading of the section they apply to.
+Match the exact section order and headings of `adr-000-template.md` — **no additional sections**. Every section fully filled — no `{...}` tokens remaining. Deviation notes (if any) appear as a blockquote directly beneath the heading of the section they apply to. Stay within the **Length & Concision Standard** above.
 
 ---
 
 ## Definition of Done
 
 - [ ] No `{...}` template placeholders remain in the written file
-- [ ] Every section from `adr-000-template.md` is present and filled
+- [ ] Every section from `adr-000-template.md` is present and filled, and no section beyond it was added
 - [ ] The ADR number is correctly sequential with no collision against existing files in `docs/adr/`
 - [ ] Every user override of a best-practice challenge has an inline deviation note with a stated reason, in the exact format from `STANDARDS.md`
 - [ ] If the target ADR's Status was Accepted/Rejected/Deprecated and the user asked for an update, the supersede-vs-edit question was raised before any content changed
 - [ ] Update mode: any cross-section contradiction introduced by the edit was raised to the user and resolved before writing
+- [ ] The document is within the Length & Concision Standard (~300-700 words; `Decision` is the only prose paragraph)
 - [ ] File written to `docs/adr/adr-{NNN}-{slug}.md` — not returned only in chat
