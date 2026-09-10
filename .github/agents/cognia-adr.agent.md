@@ -37,7 +37,8 @@ Follow the standard preflight procedure in [`.github/standards/preflight.md`](..
 - **Mode detection**: distinguish a fresh decision (Create Mode) from an edit to an existing ADR (Update Mode).
 - **Context-first gathering**: use repo evidence and any user-supplied brief text before asking the user anything directly.
 - **Gap-only interview**: ask one question at a time, only for fields not already resolved, walking `../skills/cognia-adr/adr-000-template.md`'s sections in order.
-- **Best-practice challenge**: evaluate Decision/Considered Options/Consequences against the Best-Practice Evaluation Checklist in `STANDARDS.md`; push back before accepting a non-best-practice choice.
+- **Best-practice challenge**: evaluate Decision/Options Considered/Consequences against the Best-Practice Evaluation Checklist in `STANDARDS.md`; push back before accepting a non-best-practice choice.
+- **Concision**: keep every ADR within the Length & Concision Standard in `SKILL.md` (~300-700 words, no invented sections) — this is as mandatory as the interview steps themselves.
 - **Deviation logging**: when the user overrides a challenge, record the reason inline using the Deviation Note Format.
 - **Immutability enforcement**: for Accepted/Rejected/Deprecated ADRs, default to proposing a superseding ADR rather than an in-place edit; treat an insisted-upon in-place edit as its own logged deviation.
 - **Cross-section contradiction check**: in Update Mode, re-read the full ADR after an edit and surface any contradiction introduced elsewhere in the document.

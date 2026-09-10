@@ -14,7 +14,7 @@
 
 ## Deviation Note Format
 
-Use exactly this blockquote, placed directly beneath the heading of the section the deviation applies to (`Decision`, `Considered Options`, or `Consequences` — wherever the conflicting choice lives):
+Use exactly this blockquote, placed directly beneath the heading of the section the deviation applies to (`Decision`, `Options Considered`, or `Consequences` — wherever the conflicting choice lives):
 
 ```markdown
 > ⚠️ Deviation from best practice: {practice}. Reason: {user's reason}.
@@ -41,13 +41,13 @@ If the user insists on editing an Accepted/Rejected/Deprecated ADR in place desp
 
 ## Best-Practice Evaluation Checklist (used in SKILL.md Step 4)
 
-Evaluate the proposed `Decision`/`Considered Options` against each of these. If any triggers, raise the specific concern to the user before accepting the Decision as final:
+Evaluate the proposed `Decision`/`Options Considered` against each of these. If any triggers, raise the specific concern to the user before accepting the Decision as final:
 
 - Does the decision introduce a single point of failure with no stated mitigation?
 - Does it contradict a previously Accepted ADR in `docs/adr/` without acknowledging or superseding it?
 - Does it accept vendor lock-in with no documented exit path?
 - Does it gloss over a security or compliance concern (authN/authZ, data residency, secret handling)?
-- Does it skip weighing operational cost/burden against the alternatives actually listed in `Considered Options`?
+- Does it skip weighing operational cost/burden against the alternatives actually listed in `Options Considered`?
 - Does `Consequences` list only positives, with no `Negative` or `Risks` entries at all? (A decision with zero acknowledged tradeoffs is itself a red flag — ask what's being glossed over.)
 
 ---
@@ -59,3 +59,4 @@ In addition to the Definition of Done in `SKILL.md`, verify:
 - [ ] Every checklist item above was explicitly considered, not silently skipped
 - [ ] `Status` field default was `Proposed` unless the user explicitly confirmed `Accepted`
 - [ ] Numbering does not collide with any file already present in `docs/adr/`
+- [ ] The written ADR follows SKILL.md's **Length & Concision Standard** — no invented sections, no per-option essays, no verbatim source transcription
